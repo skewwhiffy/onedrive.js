@@ -4,8 +4,9 @@
   "description": "Onedrive tool",
   "main": "index.js",
   "scripts": {
+    "eslint": "eslint **/*.js",
     "start": "node index.js",
-    "test": "mocha **/*.test.js"
+    "test": "npm run eslint && mocha **/*.test.js"
   },
   "repository": {
     "type": "git",
@@ -18,6 +19,11 @@
   },
   "homepage": "https://github.com/skewwhiffy/onedrive.js#readme",
   "devDependencies": {
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.17.3",
+    "eslint-plugin-mocha": "^5.3.0",
+    "eslint-plugin-vue": "^5.2.2",
     "mocha": "^6.1.4"
   }
 }
