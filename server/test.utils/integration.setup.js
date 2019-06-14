@@ -3,6 +3,9 @@ const request = require('supertest');
 const apiSetup = require('../api.setup');
 
 module.exports.init = async () => {
-  const app = await apiSetup();
+  const testConfig = {
+    db: ':memory:'
+  };
+  const app = await apiSetup(testConfig);
   return request(app);
 };

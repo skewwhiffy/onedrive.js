@@ -1,11 +1,12 @@
 'use strict';
 const express = require('express');
 const Router = require('./router');
+const Middleware = require('./middleware');
 
-module.exports = async () => {
+module.exports = async config => {
   const app = express();
-  const router = new Router();
-  await router.route(app);
+  await Router.init(app);
+  await Middleware.init(app, config);
   app.use(express.static('resources'));
   return app;
 };
