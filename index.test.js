@@ -1,6 +1,5 @@
 'use strict';
+const chai = require('chai');
+const dirtyChai = require('dirty-chai');
 
-describe('My first test', () => {
-  it('works', () => {
-  });
-});
+chai.use(dirtyChai);
