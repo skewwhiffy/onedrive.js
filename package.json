@@ -4,6 +4,7 @@
   "description": "Onedrive tool",
   "main": "index.js",
   "scripts": {
+    "build": "./build.sh",
     "eslint": "eslint **/*.js",
     "start": "node index.js",
     "test": "npm run eslint && mocha **/*.test.js"
