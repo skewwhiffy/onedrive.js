@@ -1,12 +1,12 @@
 'use strict';
 const express = require('express');
-const Init = require('./server/init');
+const apiSetup = require('./server/api.setup');
 
 const server = async () => {
   const app = express();
   const port = 38080;
-  Init.init(app);
-  app.use(express.static('resources'));
+  apiSetup(app);
+
   /* eslint-disable no-console */
   app.listen(port, () => console.log(`Listening on port ${port}`));
   /* eslint-enable no-console */

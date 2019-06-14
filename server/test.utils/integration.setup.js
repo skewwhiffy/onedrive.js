@@ -1,12 +1,12 @@
 'use strict';
 const express = require('express');
 const request = require('supertest');
-const Init = require('../init');
+const apiSetup = require('../api.setup');
 
 module.exports = class {
   constructor() {
     const app = express();
-    Init.init(app);
+    apiSetup(app);
     this.app = app;
   }
 
