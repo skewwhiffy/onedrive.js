@@ -2,11 +2,11 @@
 const _ = require('lodash');
 const fs = require('es6-fs');
 const path = require('path');
-const dynamicRequire = require('./utils/dynamic.require');
+const dynamicRequire = require('../utils/dynamic.require');
 
 const testSuffix = 'test.js';
 const controllerSuffix = '.js';
-const controllerDirectory = path.join(__dirname, 'controller');
+const controllerDirectory = path.join(__dirname, '../controller');
 
 module.exports.init = async app => {
   const controllers = await fs.readdir(controllerDirectory);

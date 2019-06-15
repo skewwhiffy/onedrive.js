@@ -1,9 +1,9 @@
 'use strict';
 const fs = require('es6-fs');
 const path = require('path');
-const dynamicRequire = require('./utils/dynamic.require');
+const dynamicRequire = require('../utils/dynamic.require');
 
-const middlewareDirectory = path.join(__dirname, 'middleware');
+const middlewareDirectory = path.join(__dirname, '../middleware');
 
 module.exports.init = async (app, config) => {
   const middlewareFiles = await fs.readdir(middlewareDirectory);
