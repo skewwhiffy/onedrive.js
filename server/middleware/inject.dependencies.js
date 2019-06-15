@@ -1,4 +1,7 @@
 'use strict';
+const Ioc = require('../ioc/container');
+
+const ioc = new Ioc();
 
 module.exports = class {
   constructor(config) {
@@ -6,7 +9,7 @@ module.exports = class {
   }
 
   async run(req, _res, next) {
-    req.ioc = {};
+    req.ioc = ioc;
     next();
   }
 };
