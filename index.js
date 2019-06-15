@@ -1,7 +1,7 @@
 'use strict';
 const sqlite = require('sqlite3');
 const fs = require('es6-fs');
-const apiSetup = require('./server/api.setup');
+const apiSetup = require('./server/setup/api');
 const config = require('./config');
 
 const server = async () => {

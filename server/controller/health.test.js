@@ -7,7 +7,7 @@ describe('GET /api/health', () => {
 
   beforeEach(async () => { server = await Server.init(); });
 
-  it('returns heath check', async () => {
+  it('returns health check', async () => {
     const result = await server.get('/api/health');
 
     expect(result.status).to.equal(200);

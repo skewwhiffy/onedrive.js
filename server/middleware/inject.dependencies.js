@@ -1,10 +1,9 @@
 'use strict';
 const autobind = require('auto-bind');
-const Ioc = require('../ioc/container');
 
 module.exports = class {
-  constructor(config) {
-    this.ioc = Ioc.init(config);
+  constructor(ioc) {
+    this.ioc = ioc;
     autobind(this);
   }
 
