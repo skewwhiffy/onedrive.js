@@ -10,10 +10,12 @@ module.exports = class {
   }
 
   async get(req, res) {
+    const db = await req.ioc.getDb();
+    const dbVersionData = await db.query('select sqlite_version() version');
     res.send({
       db: {
-        // TODO
-        status: 'OK'
+        status: 'OK',
+        version: dbVersionData[0][0].version
       }
     });
   }

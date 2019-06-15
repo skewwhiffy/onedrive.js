@@ -1,15 +1,15 @@
 'use strict';
+const autobind = require('auto-bind');
 const Ioc = require('../ioc/container');
-
-const ioc = new Ioc();
 
 module.exports = class {
   constructor(config) {
-    this.config = config;
+    this.ioc = Ioc.init(config);
+    autobind(this);
   }
 
   async run(req, _res, next) {
-    req.ioc = ioc;
+    req.ioc = this.ioc;
     next();
   }
 };
