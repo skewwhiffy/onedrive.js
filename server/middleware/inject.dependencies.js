@@ -1,7 +1,7 @@
 'use strict';
-const autobind = require('auto-bind');
+import autobind from 'auto-bind';
 
-module.exports = class {
+export default class {
   constructor(ioc) {
     this.ioc = ioc;
     autobind(this);
@@ -11,4 +11,4 @@ module.exports = class {
     req.ioc = this.ioc;
     next();
   }
-};
+}

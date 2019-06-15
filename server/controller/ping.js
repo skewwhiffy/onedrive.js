@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = class {
+export default class {
   constructor() {
     this.routes = {
       '/': {
@@ -12,4 +12,4 @@ module.exports = class {
   async get(req, res) {
     res.send({ message: 'pong' });
   }
-};
+}

@@ -12,7 +12,7 @@
   },
   "parserOptions": {
     "ecmaVersion": 2018,
-    "sourceType": "script"
+    "sourceType": "module"
   },
   "plugins": [
     "vue",
@@ -22,11 +22,13 @@
     "arrow-parens": "off",
     "class-methods-use-this": "off",
     "comma-dangle": "off",
+    "import/order": "off",
     "import/no-extraneous-dependencies": ["error", {
       "devDependencies": ["**/*.test.js", "server/test.utils/*.js"]
     }],
     "lines-around-directive": "off",
     "no-console": "error",
-    "mocha/no-exclusive-tests": "error"
+    "mocha/no-exclusive-tests": "error",
+    "strict": "off"
   }
 }

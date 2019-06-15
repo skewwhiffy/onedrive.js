@@ -1,6 +1,6 @@
 'use strict';
-const Sequelize = require('sequelize');
-const Logger = require('../utils/logger');
+import Sequelize from 'sequelize';
+import Logger from '../utils/logger';
 
 const singletons = {
   getDb: async ioc => {
@@ -14,7 +14,7 @@ const singletons = {
   getLogger: async () => new Logger()
 };
 
-module.exports = class {
+export default class {
   constructor(inject) {
     this.singletonCache = {};
     Object.keys(singletons).forEach(key => {
@@ -28,4 +28,4 @@ module.exports = class {
       this[method] = async () => inject[key];
     });
   }
-};
+}

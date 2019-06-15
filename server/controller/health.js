@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = class {
+export default class {
   constructor() {
     this.routes = {
       '/': {
@@ -19,4 +19,4 @@ module.exports = class {
       }
     });
   }
-};
+}

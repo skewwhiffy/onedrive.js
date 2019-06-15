@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = {
+export default {
   up: async (query, DataTypes) => {
     await query.createTable('user', {
       id: {

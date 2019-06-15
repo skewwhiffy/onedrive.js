@@ -1,8 +1,8 @@
 'use strict';
-const sqlite = require('sqlite3');
-const fs = require('es6-fs');
-const apiSetup = require('./server/setup/api');
-const config = require('./config');
+import sqlite from 'sqlite3';
+import fs from 'es6-fs';
+import apiSetup from './server/setup/api';
+import config from './config';
 
 const server = async () => {
   const port = 38080;

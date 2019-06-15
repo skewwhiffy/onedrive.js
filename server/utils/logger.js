@@ -1,7 +1,7 @@
 'use strict';
-const autobind = require('auto-bind');
+import autobind from 'auto-bind';
 
-module.exports = class {
+export default class {
   constructor(print) {
     /* eslint-disable no-console */
     this.print = print || console.log;
@@ -16,4 +16,4 @@ module.exports = class {
   warn(message) { this.log('WARN', message); }
 
   error(message) { this.log('ERROR', message); }
-};
+}

@@ -1,11 +1,11 @@
 'use strict';
-const express = require('express');
-const Db = require('./db');
-const Ioc = require('../ioc/container');
-const Router = require('./router');
-const Middleware = require('./middleware');
+import express from 'express';
+import Db from './db';
+import Ioc from '../ioc/container';
+import Router from './router';
+import Middleware from './middleware';
 
-module.exports = async (config, inject) => {
+export default async (config, inject) => {
   const app = express();
   const ioc = new Ioc(Object.assign(inject || {}, { app, config }));
   await Middleware.init(ioc);

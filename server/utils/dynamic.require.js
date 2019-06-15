@@ -1,3 +1,5 @@
 'use strict';
 
-module.exports = require;
+const dynamicRequire = require;
+
+export default module => dynamicRequire(module).default;

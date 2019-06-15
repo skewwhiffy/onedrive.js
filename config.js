@@ -1,11 +1,11 @@
 'use strict';
-const os = require('os');
-const path = require('path');
+import os from 'os';
+import path from 'path';
 
 const homeDirectory = os.homedir();
 const configDirectory = path.join(homeDirectory, '.config/onedrive.js');
 
-module.exports = {
+export default {
   configDirectory,
   db: path.join(configDirectory, 'db.sqlite')
 };

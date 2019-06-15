@@ -1,9 +1,10 @@
 'use strict';
-const fs = require('es6-fs');
-const chai = require('chai');
-const dirtyChai = require('dirty-chai');
-const { expect } = require('chai');
-const Server = require('./server/test.utils/integration.setup');
+import fs from 'es6-fs';
+import chai from 'chai';
+import dirtyChai from 'dirty-chai';
+import Server from './server/test.utils/integration.setup';
+
+const { expect } = chai;
 
 chai.use(dirtyChai);
 

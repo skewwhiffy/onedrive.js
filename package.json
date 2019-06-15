@@ -6,8 +6,8 @@
   "scripts": {
     "build": "./build.sh",
     "eslint": "eslint \"**/*.js\"",
-    "start": "node index.js",
-    "test": "mocha index.test.js server/**/*.test.js"
+    "start": "node -r esm index.js",
+    "test": "mocha -r esm index.test.js server/**/*.test.js"
   },
   "repository": {
     "type": "git",
@@ -34,6 +34,7 @@
   "dependencies": {
     "auto-bind": "^2.1.0",
     "es6-fs": "^1.1.1",
+    "esm": "^3.2.25",
     "express": "^4.17.1",
     "lodash": "^4.17.11",
     "sequelize": "^5.8.9",

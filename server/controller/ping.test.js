@@ -1,6 +1,6 @@
 'use strict';
-const { expect } = require('chai');
-const Server = require('../test.utils/integration.setup');
+import { expect } from 'chai';
+import Server from '../test.utils/integration.setup';
 
 describe('GET /api/ping', () => {
   let server;
