@@ -5,8 +5,8 @@ const Middleware = require('./middleware');
 
 module.exports = async config => {
   const app = express();
-  await Router.init(app);
   await Middleware.init(app, config);
+  await Router.init(app);
   app.use(express.static('resources'));
   return app;
 };

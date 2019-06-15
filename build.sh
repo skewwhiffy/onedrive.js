@@ -7,3 +7,6 @@ cd ..
 
 echo Copying to server
 cp -r frontend/dist resources
+
+echo Building server
+npm install

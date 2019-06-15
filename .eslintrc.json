@@ -26,6 +26,7 @@
       "devDependencies": ["**/*.test.js", "server/test.utils/*.js"]
     }],
     "lines-around-directive": "off",
-    "no-console": "error"
+    "no-console": "error",
+    "mocha/no-exclusive-tests": "error"
   }
 }
