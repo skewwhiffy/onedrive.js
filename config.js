@@ -1,7 +1,9 @@
 'use strict';
+const os = require('os');
 const path = require('path');
 
-const configDirectory = '~/.config/onedrive.js';
+const homeDirectory = os.homedir();
+const configDirectory = path.join(homeDirectory, '.config/onedrive.js');
 
 module.exports = {
   configDirectory,
