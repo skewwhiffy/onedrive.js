@@ -2,6 +2,7 @@
 const _ = require('lodash');
 const fs = require('es6-fs');
 const path = require('path');
+const dynamicRequire = require('./utils/dynamic.require');
 
 const testSuffix = 'test.js';
 const controllerSuffix = '.js';
@@ -14,13 +15,9 @@ module.exports.init = async app => {
     .filter(it => !it.endsWith(testSuffix))
     .map(it => it.substring(0, it.length - controllerSuffix.length));
 
-  /* eslint-disable import/no-dynamic-require */
-  /* eslint-disable global-require */
   const controllersWithRoutes = controllerNames
-    .map(it => ({ route: it, constructor: require(path.join(controllerDirectory, it)) }))
+    .map(it => ({ route: it, constructor: dynamicRequire(path.join(controllerDirectory, it)) }))
     .map(({ route, constructor }) => ({ route, instance: new constructor() }));
-  /* eslint-enable global-require */
-  /* eslint-enable import/no-dynamic-require global-require */
   const paths = _.flatten(controllersWithRoutes
     .map(({ route, instance }) => Object.keys(instance.routes).map(it => ({
       url: path.join(`/api/${route}`, it),
