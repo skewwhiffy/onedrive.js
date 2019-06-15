@@ -1,5 +1,5 @@
 'use strict';
-const MigrationRepo = require('../repo/migration.repo');
 
-module.exports.init = async config => {
+module.exports.init = async ioc => {
+  console.log(ioc);
 };

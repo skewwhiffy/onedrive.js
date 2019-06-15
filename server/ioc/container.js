@@ -6,12 +6,13 @@ const singletons = {
     const config = await ioc.getConfig();
     return new Sequelize({
       dialect: 'sqlite',
-      storage: config.db
+      storage: config.db,
+      logging: false
     });
   }
 };
 
-class Container {
+module.exports = class {
   constructor(inject) {
     this.singletonCache = {};
     this.perRequestCache = {};
@@ -26,12 +27,4 @@ class Container {
       this[method] = async () => inject[key];
     });
   }
-}
-
-const containerCache = {};
-
-module.exports.init = config => {
-  const configKey = JSON.stringify(config);
-  containerCache[configKey] = containerCache[configKey] || new Container(config);
-  return containerCache[configKey];
 };

@@ -7,10 +7,10 @@ const Middleware = require('./middleware');
 
 module.exports = async config => {
   const app = express();
-  const ioc = Ioc.init({ app, config });
+  const ioc = new Ioc({ app, config });
   await Middleware.init(ioc);
   await Router.init(app);
-  await Db.init(config);
+  await Db.init(ioc);
   app.use(express.static('resources'));
   return app;
 };
