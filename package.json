@@ -7,7 +7,9 @@
     "build": "./build.sh",
     "eslint": "eslint \"**/*.js\"",
     "start": "node -r esm index.js",
-    "test": "mocha -r esm index.test.js server/**/*.test.js"
+    "test:frontend": "mocha -r esm index.test.js frontend/src/**/*.test.js",
+    "test:server": "mocha -r esm index.test.js server/**/*.test.js",
+    "test": "mocha -r esm index.test.js server/**/*.test.js frontend/src/**/*.test.js"
   },
   "repository": {
     "type": "git",
