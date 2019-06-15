@@ -1,5 +1,6 @@
 'use strict';
 const Sequelize = require('sequelize');
+const Logger = require('../utils/logger');
 
 const singletons = {
   getDb: async ioc => {
@@ -9,13 +10,13 @@ const singletons = {
       storage: config.db,
       logging: false
     });
-  }
+  },
+  getLogger: async () => new Logger()
 };
 
 module.exports = class {
   constructor(inject) {
     this.singletonCache = {};
-    this.perRequestCache = {};
     Object.keys(singletons).forEach(key => {
       this[key] = async () => {
         this.singletonCache[key] = this.singletonCache[key] || await singletons[key](this);

@@ -3,6 +3,8 @@ const Umzug = require('umzug');
 
 module.exports.init = async ioc => {
   const db = await ioc.getDb();
+  const logger = await ioc.getLogger();
+  const logging = logger.info;
   const umzug = new Umzug({
     storage: 'sequelize',
     storageOptions: {
@@ -17,9 +19,7 @@ module.exports.init = async ioc => {
       path: './migrations',
       pattern: /\.js$/
     },
-    /* eslint-disable no-console */
-    logging: console.log
-    /* eslint-enable no-console */
+    logging
   });
   await umzug.up();
 };
