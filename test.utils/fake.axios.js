@@ -4,8 +4,13 @@ import Server from './integration.setup';
 
 export default {
   init: async () => {
-    const { server, app } = await Server.init();
+    const { app, ioc, server } = await Server.init();
     const axios = axiosist(app);
-    return { app, axios, server };
+    return {
+      app,
+      axios,
+      ioc,
+      server
+    };
   }
 };

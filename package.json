@@ -6,8 +6,8 @@
   "scripts": {
     "clean": "rm -rf node_modules && rm -rf frontend/node_modules && rm -rf resources && rm -rf frontend/dist",
     "build": "./build.sh",
-    "eslint:server": "eslint \"**/*.js\"",
-    "eslint": "npm run eslint:server",
+    "eslint:server": "",
+    "eslint": "eslint \"**/*.{js,vue}\"",
     "start": "node -r esm index.js",
     "test:frontend": "mocha -r esm index.test.js frontend/src/**/*.test.js",
     "test:server": "mocha -r esm index.test.js server/**/*.test.js",
@@ -23,6 +23,9 @@
     "url": "https://github.com/skewwhiffy/onedrive.js/issues"
   },
   "homepage": "https://github.com/skewwhiffy/onedrive.js#readme",
+  "nodemonConfig": {
+    "ext": "js,vue,json"
+  },
   "devDependencies": {
     "axiosist": "^0.6.1",
     "babel-eslint": "^10.0.1",
@@ -39,9 +42,11 @@
   },
   "dependencies": {
     "auto-bind": "^2.1.0",
+    "base64url": "^3.0.1",
     "es6-fs": "^1.1.1",
     "esm": "^3.2.25",
     "express": "^4.17.1",
+    "generate-safe-id": "^1.0.2",
     "lodash": "^4.17.11",
     "sequelize": "^5.8.9",
     "sqlite3": "^4.0.9",

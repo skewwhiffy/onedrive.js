@@ -5,7 +5,10 @@
     "node": true,
     "mocha": true
   },
-  "extends": "airbnb-base",
+  "extends": [
+    "airbnb-base",
+    "plugin:vue/recommended"
+  ],
   "globals": {
     "Atomics": "readonly",
     "SharedArrayBuffer": "readonly"
@@ -29,6 +32,7 @@
     "lines-around-directive": "off",
     "no-console": "error",
     "mocha/no-exclusive-tests": "error",
-    "strict": "off"
+    "strict": "off",
+    "vue/max-attributes-per-line": "off"
   }
 }

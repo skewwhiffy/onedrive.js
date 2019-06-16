@@ -15,5 +15,5 @@ export default {
     TopBar,
     Main
   }
-}
+};
 </script>

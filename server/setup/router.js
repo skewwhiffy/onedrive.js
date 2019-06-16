@@ -9,7 +9,8 @@ const controllerSuffix = '.js';
 const controllerDirectory = path.join(__dirname, '../controller');
 
 export default {
-  init: async app => {
+  init: async ioc => {
+    const app = await ioc.getApp();
     const controllers = await fs.readdir(controllerDirectory);
     const controllerNames = controllers
       .filter(it => it.endsWith(controllerSuffix))

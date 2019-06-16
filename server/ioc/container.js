@@ -1,6 +1,7 @@
 'use strict';
 import Sequelize from 'sequelize';
 import Logger from '../utils/logger';
+import UserRepo from '../repo/user';
 
 const singletons = {
   getDb: async ioc => {
@@ -11,21 +12,32 @@ const singletons = {
       logging: false
     });
   },
+  getUserRepo: async ioc => {
+    const db = await ioc.getDb();
+    return new UserRepo(db);
+  },
   getLogger: async () => new Logger()
 };
 
+const singletonCache = {};
+
 export default class {
-  constructor(inject) {
-    this.singletonCache = {};
+  constructor() {
+    if (!singletons.getApp) throw Error('Need app injected');
+    if (!singletons.getConfig) throw Error('Need config injected');
     Object.keys(singletons).forEach(key => {
       this[key] = async () => {
-        this.singletonCache[key] = this.singletonCache[key] || await singletons[key](this);
-        return this.singletonCache[key];
+        singletonCache[key] = singletonCache[key] || await singletons[key](this);
+        return singletonCache[key];
       };
     });
-    Object.keys(inject).forEach(key => {
-      const method = `get${key[0].toUpperCase()}${key.substring(1)}`;
-      this[method] = async () => inject[key];
-    });
+    Object.keys(singletonCache).forEach(key => { this[key] = async () => singletonCache[key]; });
   }
 }
+
+export const init = ({ app, config, logger }) => {
+  Object.keys(singletonCache).forEach(it => delete singletonCache[it]);
+  singletons.getApp = async () => app;
+  singletons.getConfig = async () => config;
+  singletons.getLogger = async () => logger;
+};

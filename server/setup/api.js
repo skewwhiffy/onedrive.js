@@ -1,15 +1,23 @@
 'use strict';
 import express from 'express';
 import Db from './db';
-import Ioc from '../ioc/container';
+import Ioc, { init } from '../ioc/container';
 import Router from './router';
 import Middleware from './middleware';
+import Logger from '../utils/logger';
 
 export default async (config, inject) => {
-  const app = express();
-  const ioc = new Ioc(Object.assign(inject || {}, { app, config }));
+  const defaultDeps = {
+    app: express(),
+    config,
+    logger: new Logger()
+  };
+  const toInject = Object.assign(defaultDeps, inject);
+  init(toInject);
+  const ioc = new Ioc();
+  const app = await ioc.getApp();
   await Middleware.init(ioc);
-  await Router.init(app);
+  await Router.init(ioc);
   await Db.init(ioc);
   app.use(express.static('resources'));
   return { app, ioc };

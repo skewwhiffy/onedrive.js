@@ -6,8 +6,8 @@
 
 <script>
 export default {
-  name: 'TopBar'
-}
+  name: 'TopBar',
+};
 </script>
 
 <style scoped>

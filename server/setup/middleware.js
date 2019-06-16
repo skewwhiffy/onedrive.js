@@ -11,7 +11,7 @@ export default {
     const middlewareFiles = await fs.readdir(middlewareDirectory);
     const middlewareImports = middlewareFiles
       .map(it => dynamicRequire(path.join(middlewareDirectory, it)))
-      .map(It => new It(ioc));
+      .map(It => new It());
     middlewareImports.forEach(it => app.use(it.run));
   }
 };
