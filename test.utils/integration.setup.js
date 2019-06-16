@@ -1,7 +1,7 @@
 'use strict';
 import request from 'supertest';
-import apiSetup from '../setup/api';
-import Logger from '../utils/logger';
+import apiSetup from '../server/setup/api';
+import Logger from '../server/utils/logger';
 
 export default {
   init: async () => {

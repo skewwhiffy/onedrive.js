@@ -2,7 +2,7 @@
 import fs from 'es6-fs';
 import chai from 'chai';
 import dirtyChai from 'dirty-chai';
-import Server from './server/test.utils/integration.setup';
+import Server from './test.utils/integration.setup';
 
 const { expect } = chai;
 

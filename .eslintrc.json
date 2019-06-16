@@ -24,7 +24,7 @@
     "comma-dangle": "off",
     "import/order": "off",
     "import/no-extraneous-dependencies": ["error", {
-      "devDependencies": ["**/*.test.js", "server/test.utils/*.js"]
+      "devDependencies": ["**/*.test.js", "test.utils/*.js"]
     }],
     "lines-around-directive": "off",
     "no-console": "error",

@@ -1,6 +1,6 @@
 'use strict';
 import { expect } from 'chai';
-import Server from '../test.utils/integration.setup';
+import Server from '../../test.utils/integration.setup';
 
 describe('GET /api/ping', () => {
   let server;

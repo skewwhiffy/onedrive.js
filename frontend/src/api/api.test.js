@@ -1,5 +1,5 @@
 'use strict';
 
 describe('api', () => {
-  it('works', () => {});
+  it('fetches users', () => {});
 });
