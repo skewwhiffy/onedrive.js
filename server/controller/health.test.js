@@ -5,7 +5,9 @@ import Server from '../../test.utils/integration.setup';
 describe('GET /api/health', () => {
   let server;
 
-  beforeEach(async () => { server = await Server.init(); });
+  beforeEach(async () => {
+    ({ server } = await Server.init());
+  });
 
   it('returns health check', async () => {
     const result = await server.get('/api/health');

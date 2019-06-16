@@ -11,7 +11,9 @@ chai.use(dirtyChai);
 describe('GET /', () => {
   let server;
 
-  beforeEach(async () => { server = await Server.init(); });
+  beforeEach(async () => {
+    ({ server } = await Server.init());
+  });
 
   it('serves index.html', async () => {
     const expectedFile = await fs.readFile('resources/index.html');

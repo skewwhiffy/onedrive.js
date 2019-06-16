@@ -6,7 +6,7 @@ import config from './config';
 
 const server = async () => {
   const port = 38080;
-  const app = await apiSetup(config);
+  const { app, ioc } = await apiSetup(config);
 
   // Ensure config directory exists
   await fs.mkdir(config.configDirectory, { recursive: true });
@@ -15,9 +15,8 @@ const server = async () => {
   const db = new sqlite.Database(config.db);
   await db.close();
 
-  /* eslint-disable no-console */
-  app.listen(port, () => console.log(`Listening on port ${port}`));
-  /* eslint-enable no-console */
+  const logger = await ioc.getLogger();
+  app.listen(port, () => logger.info(`Listening on port ${port}`));
 };
 
 server();
