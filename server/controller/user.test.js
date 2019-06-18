@@ -33,4 +33,13 @@ describe('GET /api/user', () => {
     expect(redirect).to.include('login.live.com');
     expect(query).to.have.keys('client_id', 'scope', 'redirect_uri', 'response_type');
   });
+
+  it('puts code into database', async () => {
+    const code = safeId();
+    const result = await server.get(`/api/user/code/${code}`);
+
+    expect(result.status).to.equal(302);
+    expect(result.headers.location).to.equal('/');
+    // TODO: Inserts user
+  });
 });

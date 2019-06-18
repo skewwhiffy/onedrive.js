@@ -7,6 +7,9 @@ export default class {
         get: this.get,
         put: this.put
       },
+      '/code/:id': {
+        get: this.code
+      }
     };
   }
 
@@ -23,5 +26,13 @@ export default class {
       redirect: loginUrl,
       query: loginQuery
     });
+  }
+
+  async code(req, res) {
+    if (req.params && req.params.id) {
+      const onedriveService = await req.ioc.getOnedriveService();
+      onedriveService.insertCode(req.params.id);
+      res.redirect('/');
+    }
   }
 }

@@ -9,9 +9,9 @@
     "eslint:server": "",
     "eslint": "eslint \"**/*.{js,vue}\"",
     "start": "node -r esm index.js",
-    "test:frontend": "mocha -r esm index.test.js frontend/src/**/*.test.js",
+    "test:frontend": "mocha -r esm frontend/index.test.js frontend/src/**/*.test.js",
     "test:server": "mocha -r esm index.test.js server/**/*.test.js",
-    "test": "mocha -r esm index.test.js server/**/*.test.js frontend/src/**/*.test.js"
+    "test": "npm run test:frontend && npm run test:server"
   },
   "repository": {
     "type": "git",

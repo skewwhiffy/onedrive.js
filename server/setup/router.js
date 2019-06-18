@@ -1,4 +1,5 @@
 'use strict';
+import express from 'express';
 import _ from 'lodash';
 import fs from 'es6-fs';
 import path from 'path';
@@ -30,5 +31,15 @@ export default {
         app[method](url, implementations[method]);
       });
     });
+    app.get('/', async (req, res) => {
+      const { query } = req;
+      if (query && query.code) {
+        res.redirect(`/api/user/code/${query.code}`);
+      } else {
+        const file = await fs.readFile('resources/index.html');
+        res.send(file.toString());
+      }
+    });
+    app.use(express.static('resources'));
   }
 };

@@ -1,4 +1,7 @@
 'use strict';
+import chai from 'chai';
+import dirtyChai from 'dirty-chai';
 
-describe('does not work', () => {
-});
+chai.use(dirtyChai);
+
+describe('', () => {});

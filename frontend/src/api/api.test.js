@@ -30,4 +30,10 @@ describe('api', () => {
     expect(result).to.have.length(1);
     expect(result[0].email).to.equal(user.email);
   });
+
+  it('fetches redirect URL', async () => {
+    const result = await api.getLoginUrl();
+
+    expect(result).not.to.be.undefined();
+  });
 });

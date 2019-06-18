@@ -19,6 +19,5 @@ export default async (config, inject) => {
   await Middleware.init(ioc);
   await Router.init(ioc);
   await Db.init(ioc);
-  app.use(express.static('resources'));
   return { app, ioc };
 };

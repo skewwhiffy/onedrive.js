@@ -13,7 +13,7 @@ const singletons = {
       logging: false
     });
   },
-  getOnedriveService: async () => new OnedriveService(),
+  getOnedriveService: async ioc => new OnedriveService(await ioc.getLogger()),
   getUserRepo: async ioc => {
     const db = await ioc.getDb();
     return new UserRepo(db);

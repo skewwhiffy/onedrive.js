@@ -14,6 +14,7 @@ export default class {
         logger.warn('Dev environment: bypassing CORS');
       }
       res.header('Access-Control-Allow-Origin', '*');
+      res.header('Access-Control-Allow-Methods', 'GET,POST,PUT');
       res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     }
     next();

@@ -15,4 +15,15 @@ export default class {
     const response = await this.axios.get('/api/user');
     return response.data;
   }
+
+  async getLoginUrl() {
+    const response = await this.axios.put('/api/user');
+    const { query, redirect } = response.data;
+    const queryString = Object.keys(query)
+      .map(key => ({ key, value: query[key] }))
+      .map(({ key, value }) => ({ key: encodeURIComponent(key), value: encodeURIComponent(value) }))
+      .map(({ key, value }) => `${key}=${value}`)
+      .join('&');
+    return `${redirect}?${queryString}`;
+  }
 }

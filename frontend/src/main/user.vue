@@ -2,13 +2,17 @@
   <div>
     <h1>Users</h1>
     <div v-if="!loading">
-      <h2 v-if="users.length === 0">No users</h2>
+      <h2 v-if="users.length === 0">
+        No users
+      </h2>
       <ul>
         <li v-for="user in users" :key="user.id">
           {{ user.email }}
         </li>
       </ul>
-      <b-button @click="addUser">Add</b-button>
+      <b-button @click="addUser">
+        Add
+      </b-button>
     </div>
     <div v-if="loading">
       <h2>Loading</h2>
@@ -25,7 +29,8 @@ export default {
   data() {
     return {
       loading: false,
-      users: []
+      users: [],
+      loginUrl: false
     };
   },
   created() {
@@ -35,10 +40,11 @@ export default {
     async refreshUserList() {
       this.loading = true;
       this.users = await api.getUsers();
+      this.loginUrl = await api.getLoginUrl();
       this.loading = false;
     },
     addUser() {
-      console.log('Need to add user');
+      window.location.href = this.loginUrl;
     }
   }
 };
