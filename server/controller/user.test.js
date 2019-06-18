@@ -24,4 +24,13 @@ describe('GET /api/user', () => {
     expect(users).to.have.length(1);
     expect(users[0].email).to.equal(user.email);
   });
+
+  it('returns login URL', async () => {
+    const result = await server.put('/api/user');
+
+    expect(result.status).to.equal(200);
+    const { redirect, query } = result.body;
+    expect(redirect).to.include('login.live.com');
+    expect(query).to.have.keys('client_id', 'scope', 'redirect_uri', 'response_type');
+  });
 });

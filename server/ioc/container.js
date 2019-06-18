@@ -1,6 +1,7 @@
 'use strict';
 import Sequelize from 'sequelize';
 import Logger from '../utils/logger';
+import OnedriveService from '../service/onedrive';
 import UserRepo from '../repo/user';
 
 const singletons = {
@@ -12,6 +13,7 @@ const singletons = {
       logging: false
     });
   },
+  getOnedriveService: async () => new OnedriveService(),
   getUserRepo: async ioc => {
     const db = await ioc.getDb();
     return new UserRepo(db);
