@@ -12,6 +12,7 @@ describe('GET /api/user', () => {
 
   beforeEach(async () => {
     axios = {
+      get: sinon.stub(),
       post: sinon.stub()
     };
     ({ ioc, server } = await Server.init({ axios }));
@@ -19,7 +20,11 @@ describe('GET /api/user', () => {
   });
 
   it('gets users', async () => {
-    const user = { email: `${shortId()}@test.com` };
+    const user = {
+      onedriveId: shortId(),
+      displayName: shortId(),
+      refreshToken: shortId()
+    };
     await userRepo.insert(user);
 
     const result = await server.get('/api/user');
@@ -40,18 +45,32 @@ describe('GET /api/user', () => {
   });
 
   it('puts code into database', async () => {
+    const onedriveUser = {
+      id: shortId(),
+      displayName: shortId()
+    };
+    const refreshToken = shortId();
     axios.post.resolves({
       data: {
         access_token: shortId(),
         expires_in: shortId(),
-        refresh_token: shortId()
+        refresh_token: refreshToken
       }
     });
+    axios.get.resolves({ data: { owner: { user: onedriveUser } } });
     const code = shortId();
     const result = await server.get(`/api/user/code/${code}`);
+    const users = await userRepo.get();
 
     expect(result.status).to.equal(302);
     expect(result.headers.location).to.equal('/');
-    // TODO: Inserts user
+    expect(users).to.have.length(1);
+    const dbUser = users[0];
+    expect(dbUser).to.eql({
+      id: dbUser.id,
+      onedriveId: onedriveUser.id,
+      displayName: onedriveUser.displayName,
+      refreshToken
+    });
   });
 });

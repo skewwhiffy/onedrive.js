@@ -1,5 +1,5 @@
 'use strict';
-import safeId from 'generate-safe-id';
+import shortId from 'shortid';
 import { expect } from 'chai';
 import FakeAxios from '../../../test.utils/fake.axios';
 import Api from './api';
@@ -21,14 +21,19 @@ describe('api', () => {
   });
 
   it('fetches users', async () => {
-    const user = { email: `${safeId()}@test.com` };
+    const user = {
+      onedriveId: shortId(),
+      displayName: shortId(),
+      refreshToken: shortId()
+    };
     const users = await ioc.getUserRepo();
     await users.insert(user);
 
     const result = await api.getUsers();
 
     expect(result).to.have.length(1);
-    expect(result[0].email).to.equal(user.email);
+    user.id = result[0].id;
+    expect(result[0]).to.eql(user);
   });
 
   it('fetches redirect URL', async () => {

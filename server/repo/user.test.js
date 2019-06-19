@@ -12,12 +12,17 @@ describe('User repository', () => {
   });
 
   it('inserts and gets', async () => {
-    const user = { email: `${shortId()}@test.com` };
+    const user = {
+      onedriveId: shortId(),
+      displayName: shortId(),
+      refreshToken: shortId()
+    };
     await userRepo.insert(user);
 
     const users = await userRepo.get();
 
     expect(users).to.have.length(1);
-    expect(users[0].email).to.equal(user.email);
+    user.id = users[0].id;
+    expect(users[0]).to.eql(user);
   });
 });

@@ -10,7 +10,7 @@ export default class {
         primaryKey: true,
         autoIncrement: true
       },
-      onedriveId: { type: DataTypes.TEXT, allowNull: false },
+      onedriveId: { type: DataTypes.TEXT, allowNull: false }, // TODO: Unique
       displayName: { type: DataTypes.TEXT, allowNull: false },
       refreshToken: { type: DataTypes.TEXT, allowNull: false }
     }, {
