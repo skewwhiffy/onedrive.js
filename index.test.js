@@ -1,6 +1,6 @@
 'use strict';
 import fs from 'es6-fs';
-import safeId from 'generate-safe-id';
+import shortId from 'shortid';
 import chai from 'chai';
 import dirtyChai from 'dirty-chai';
 import Server from './test.utils/integration.setup';
@@ -27,7 +27,7 @@ describe('GET /', () => {
   });
 
   it('redirects root when code query variable exists', async () => {
-    const code = safeId();
+    const code = shortId();
     const response = await server.get(`/?code=${code}`);
 
     expect(response.status).to.equal(302);

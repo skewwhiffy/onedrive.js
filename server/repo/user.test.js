@@ -1,5 +1,5 @@
 'use strict';
-import safeId from 'generate-safe-id';
+import shortId from 'shortid';
 import { expect } from 'chai';
 import Server from '../../test.utils/integration.setup';
 
@@ -12,7 +12,7 @@ describe('User repository', () => {
   });
 
   it('inserts and gets', async () => {
-    const user = { email: `${safeId()}@test.com` };
+    const user = { email: `${shortId()}@test.com` };
     await userRepo.insert(user);
 
     const users = await userRepo.get();

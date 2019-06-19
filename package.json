@@ -37,17 +37,20 @@
     "eslint-plugin-mocha": "^5.3.0",
     "eslint-plugin-vue": "^5.2.2",
     "mocha": "^6.1.4",
+    "proxyquire": "^2.1.0",
+    "shortid": "^2.2.14",
     "sinon": "^7.3.2",
     "supertest": "^4.0.2"
   },
   "dependencies": {
     "auto-bind": "^2.1.0",
+    "axios": "^0.19.0",
     "base64url": "^3.0.1",
     "es6-fs": "^1.1.1",
     "esm": "^3.2.25",
     "express": "^4.17.1",
-    "generate-safe-id": "^1.0.2",
     "lodash": "^4.17.11",
+    "querystring": "^0.2.0",
     "sequelize": "^5.8.9",
     "sqlite3": "^4.0.9",
     "umzug": "^2.2.0"

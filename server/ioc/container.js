@@ -1,10 +1,12 @@
 'use strict';
+import axios from 'axios';
 import Sequelize from 'sequelize';
 import Logger from '../utils/logger';
 import OnedriveService from '../service/onedrive';
 import UserRepo from '../repo/user';
 
 const singletons = {
+  getAxios: async () => axios,
   getDb: async ioc => {
     const config = await ioc.getConfig();
     return new Sequelize({
@@ -13,11 +15,11 @@ const singletons = {
       logging: false
     });
   },
-  getOnedriveService: async ioc => new OnedriveService(await ioc.getLogger()),
-  getUserRepo: async ioc => {
-    const db = await ioc.getDb();
-    return new UserRepo(db);
-  },
+  getOnedriveService: async ioc => new OnedriveService(
+    await ioc.getAxios(),
+    await ioc.getLogger()
+  ),
+  getUserRepo: async ioc => new UserRepo(await ioc.getDb()),
   getLogger: async () => new Logger()
 };
 
@@ -37,9 +39,10 @@ export default class {
   }
 }
 
-export const init = ({ app, config, logger }) => {
+export const init = toInject => {
   Object.keys(singletonCache).forEach(it => delete singletonCache[it]);
-  singletons.getApp = async () => app;
-  singletons.getConfig = async () => config;
-  singletons.getLogger = async () => logger;
+  Object.keys(toInject).forEach(key => {
+    const getterKey = `get${key[0].toUpperCase()}${key.substring(1)}`;
+    singletons[getterKey] = async () => toInject[key];
+  });
 };

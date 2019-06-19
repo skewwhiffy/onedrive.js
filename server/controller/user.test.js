@@ -1,20 +1,25 @@
 'use strict';
 import { expect } from 'chai';
-import safeId from 'generate-safe-id';
+import sinon from 'sinon';
+import shortId from 'shortid';
 import Server from '../../test.utils/integration.setup';
 
 describe('GET /api/user', () => {
+  let axios;
   let ioc;
   let userRepo;
   let server;
 
   beforeEach(async () => {
-    ({ ioc, server } = await Server.init());
+    axios = {
+      post: sinon.stub()
+    };
+    ({ ioc, server } = await Server.init({ axios }));
     userRepo = await ioc.getUserRepo();
   });
 
   it('gets users', async () => {
-    const user = { email: `${safeId()}@test.com` };
+    const user = { email: `${shortId()}@test.com` };
     await userRepo.insert(user);
 
     const result = await server.get('/api/user');
@@ -35,7 +40,14 @@ describe('GET /api/user', () => {
   });
 
   it('puts code into database', async () => {
-    const code = safeId();
+    axios.post.resolves({
+      data: {
+        access_token: shortId(),
+        expires_in: shortId(),
+        refresh_token: shortId()
+      }
+    });
+    const code = shortId();
     const result = await server.get(`/api/user/code/${code}`);
 
     expect(result.status).to.equal(302);

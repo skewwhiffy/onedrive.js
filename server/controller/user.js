@@ -7,7 +7,7 @@ export default class {
         get: this.get,
         put: this.put
       },
-      '/code/:id': {
+      '/code/:code': {
         get: this.code
       }
     };
@@ -29,10 +29,8 @@ export default class {
   }
 
   async code(req, res) {
-    if (req.params && req.params.id) {
-      const onedriveService = await req.ioc.getOnedriveService();
-      onedriveService.insertCode(req.params.id);
-      res.redirect('/');
-    }
+    const onedriveService = await req.ioc.getOnedriveService();
+    const oauthToken = await onedriveService.getOauthToken(req.params.code);
+    res.redirect('/');
   }
 }

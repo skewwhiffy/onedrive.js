@@ -30,6 +30,7 @@
       "devDependencies": ["**/*.test.js", "test.utils/*.js"]
     }],
     "lines-around-directive": "off",
+    "new-cap": "off",
     "no-console": "error",
     "mocha/no-exclusive-tests": "error",
     "strict": "off",
