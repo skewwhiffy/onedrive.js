@@ -10,7 +10,9 @@ export default class {
         primaryKey: true,
         autoIncrement: true
       },
-      email: { type: DataTypes.TEXT, allowNull: false }
+      onedriveId: { type: DataTypes.TEXT, allowNull: false },
+      displayName: { type: DataTypes.TEXT, allowNull: false },
+      refreshToken: { type: DataTypes.TEXT, allowNull: false }
     }, {
       timestamps: false,
       freezeTableName: true,

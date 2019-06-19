@@ -3,7 +3,7 @@ import querystring from 'querystring';
 import url from 'url';
 
 const authUrl = 'https://login.live.com';
-// const graphUrl = "https://graph.microsoft.com";
+const graphUrl = "https://graph.microsoft.com";
 const redirectUrl = 'http://localhost:38080'; // TODO: Config
 const clientId = '21133f26-e5d8-486b-8b27-0801db6496a9';
 const clientSecret = 'gcyhkJZK73!$:zqHNBE243}';
@@ -23,7 +23,6 @@ export default class {
   }
 
   async getOauthToken(code) {
-    const oauthUrl = url.resolve(authUrl, 'oauth20_token.srf');
     const request = {
       client_id: clientId,
       redirect_uri: redirectUrl,
@@ -33,9 +32,8 @@ export default class {
     };
 
     this.logger.info('Getting OAuth token');
-    this.logger.info(oauthUrl);
     const result = await this.axios.post(
-      oauthUrl,
+      url.resolve(authUrl, 'oauth20_token.srf'),
       querystring.stringify(request),
       { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
     );
@@ -46,6 +44,20 @@ export default class {
       accessToken: data.access_token,
       expiresIn: data.expires_in,
       refreshToken: data.refresh_token
+    };
+  }
+
+  async getUser(accessToken) {
+    this.logger.info('Getting user info');
+    const result = await this.axios.get(
+      url.resolve(graphUrl, 'v1.0/me/drive'),
+      { headers: { Authorization: `bearer ${accessToken}` } }
+    );
+    this.logger.info('Got user info');
+    const { user } = result.data.owner;
+    return {
+      id: user.id,
+      displayName: user.displayName
     };
   }
 }

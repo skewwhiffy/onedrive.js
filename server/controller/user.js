@@ -30,7 +30,15 @@ export default class {
 
   async code(req, res) {
     const onedriveService = await req.ioc.getOnedriveService();
+    const userRepo = await req.ioc.getUserRepo();
     const oauthToken = await onedriveService.getOauthToken(req.params.code);
+    const onedriveUser = await onedriveService.getUser(oauthToken.accessToken);
+    const user = {
+      onedriveId: onedriveUser.id,
+      displayName: onedriveUser.displayName,
+      refreshToken: oauthToken.refreshToken
+    };
+    await userRepo.insert(user);
     res.redirect('/');
   }
 }

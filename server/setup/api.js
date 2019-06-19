@@ -16,8 +16,8 @@ export default async (config, inject) => {
   init(toInject);
   const ioc = new Ioc();
   const app = await ioc.getApp();
+  await Db.init(ioc);
   await Middleware.init(ioc);
   await Router.init(ioc);
-  await Db.init(ioc);
   return { app, ioc };
 };
