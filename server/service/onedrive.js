@@ -85,4 +85,17 @@ export default class {
       displayName: user.displayName
     };
   }
+
+  async getDelta(accessToken, nextLink) {
+    if (!nextLink) return this.getDelta(accessToken, url.resolve(graphUrl, 'v1.0/me/drive/root/delta'));
+    this.logger.info('Getting delta');
+    console.log(nextLink);
+    const result = await this.axios.get(
+      nextLink,
+      { headers: { Authorization: `bearer ${accessToken}` } }
+    );
+    this.logger.info('Got delta');
+    console.log(result.data);
+    throw Error();
+  }
 }

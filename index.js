@@ -2,6 +2,7 @@
 import sqlite from 'sqlite3';
 import fs from 'es6-fs';
 import apiSetup from './server/setup/api';
+import workerSetup from './server/setup/worker';
 import config from './config';
 
 const server = async () => {
@@ -17,6 +18,7 @@ const server = async () => {
 
   const logger = await ioc.getLogger();
   app.listen(port, () => logger.info(`Listening on port ${port}`));
+  await workerSetup(ioc);
 };
 
 server();
