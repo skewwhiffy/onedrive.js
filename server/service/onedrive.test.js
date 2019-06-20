@@ -42,4 +42,31 @@ describe('OneDrive service', () => {
     expect(payload).to.include.keys(['client_id', 'redirect_uri', 'client_secret']);
     expect(options.headers).to.eql({ 'Content-Type': 'application/x-www-form-urlencoded' });
   });
+
+  it('constructs call to get access token', async () => {
+    const refreshToken = shortId();
+    const accessToken = {
+      refresh_token: shortId(),
+      access_token: shortId(),
+      expires_in: _.random(100)
+    };
+    const expected = {
+      refreshToken: accessToken.refresh_token,
+      accessToken: accessToken.access_token,
+      expiresIn: accessToken.expires_in
+    };
+    axios.post.resolves({ data: accessToken });
+
+    const result = await onedrive.getAccessToken(refreshToken);
+
+    expect(result).to.eql(expected);
+    sinon.assert.calledOnce(axios.post);
+    const [url, rawPayload, options] = axios.post.getCall(0).args;
+    expect(url).to.include('oauth20_token.srf');
+    const payload = querystring.parse(rawPayload);
+    expect(payload.refresh_token).to.equal(refreshToken);
+    expect(payload.grant_type).to.equal('refresh_token');
+    expect(payload).to.include.keys(['client_id', 'redirect_uri', 'client_secret']);
+    expect(options.headers).to.eql({ 'Content-Type': 'application/x-www-form-urlencoded' });
+  });
 });

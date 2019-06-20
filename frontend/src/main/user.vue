@@ -7,7 +7,7 @@
       </h2>
       <ul>
         <li v-for="user in users" :key="user.id">
-          {{ user.email }}
+          {{ user.displayName }}
         </li>
       </ul>
       <b-button @click="addUser">
