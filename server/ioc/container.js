@@ -5,6 +5,14 @@ import Logger from '../utils/logger';
 import OnedriveService from '../service/onedrive';
 import UserRepo from '../repo/user';
 
+const STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
+const ARGUMENT_NAMES = /([^\s,]+)/g;
+const getParamNames = func => {
+  const fnStr = func.toString().replace(STRIP_COMMENTS, '');
+  const result = fnStr.slice(fnStr.indexOf('(') + 1, fnStr.indexOf(')')).match(ARGUMENT_NAMES);
+  return result === null ? [] : result;
+};
+
 const singletons = {
   getAxios: async () => axios,
   getDb: async ioc => {
@@ -36,6 +44,14 @@ export default class {
       };
     });
     Object.keys(singletonCache).forEach(key => { this[key] = async () => singletonCache[key]; });
+  }
+
+  async instantiate(toInstantiate) {
+    const paramNames = getParamNames(toInstantiate);
+    const paramValues = await Promise.all(paramNames
+      .map(it => `get${it[0].toUpperCase()}${it.substring(1)}`)
+      .map(it => this[it]()));
+    return new toInstantiate(...paramValues);
   }
 }
 
