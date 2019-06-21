@@ -75,6 +75,7 @@ describe('Delta repository', () => {
 
   it('is idempotent', async () => {
     await deltaRepo.process({ user, delta: sampleData });
+    await deltaRepo.process({ user, delta: sampleData });
 
     const deltaNextEntity = await entities.DeltaNext.findAll();
 

@@ -15,17 +15,17 @@ export default async ioc => {
     .filter(it => it.endsWith(workerSuffix))
     .filter(it => !it.endsWith(testSuffix));
 
-  await Promise.all(workerNames
+  const workerInstances = await Promise.all(workerNames
     .map(name => dynamicRequire(path.join(workerDirectory, name)))
-    .map(it => new it(ioc))
-    .map(async it => {
-      /* eslint-disable no-constant-condition */
-      while (true) {
+    .map(it => ioc.instantiate(it)));
+  await Promise.all(workerInstances.map(async it => {
+    /* eslint-disable no-constant-condition */
+    while (true) {
       /* eslint-enable no-constant-condition */
-        await it.run();
-        /* eslint-disable no-await-in-loop */
-        await pause(it.pauseMillis);
-        /* eslint-enable no-await-in-loop */
-      }
-    }));
+      /* eslint-disable no-await-in-loop */
+      await it.run();
+      await pause(it.pauseMillis);
+      /* eslint-enable no-await-in-loop */
+    }
+  }));
 };

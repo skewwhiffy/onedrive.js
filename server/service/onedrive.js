@@ -94,7 +94,6 @@ export default class {
       { headers: { Authorization: `bearer ${accessToken}` } }
     );
     this.logger.info('Got delta');
-    console.log(JSON.stringify(result.data));
-    throw Error();
+    return JSON.parse(JSON.stringify(result.data));
   }
 }
