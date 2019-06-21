@@ -20,6 +20,22 @@ export default class {
       refreshToken: { type: DataTypes.TEXT, allowNull: false }
     }, options);
 
+    this.DeltaNext = db.define('deltaNext', {
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        allowNull: false,
+        autoIncrement: true
+      },
+      userId: {
+        type: DataTypes.INTEGER,
+        references: this.User,
+        unique: true,
+        allowNull: false
+      },
+      nextLink: { type: DataTypes.STRING, allowNull: false }
+    }, options);
+
     this.Folder = db.define('folder', {
       id: {
         type: DataTypes.STRING,

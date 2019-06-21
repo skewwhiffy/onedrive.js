@@ -33,5 +33,15 @@ export default class {
         /* eslint-enable no-await-in-loop */
       }
     }
+    const existingDeltaNext = await this.entities.DeltaNext.findOne({ where: { userId: user.id } });
+    const nextLink = delta['@odata.nextLink'];
+    if (existingDeltaNext) {
+      await existingDeltaNext.update({ nextLink });
+    } else {
+      await this.entities.DeltaNext.create({
+        userId: user.id,
+        nextLink
+      });
+    }
   }
 }

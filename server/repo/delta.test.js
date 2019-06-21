@@ -11,9 +11,10 @@ describe('Delta repository', () => {
   let user;
   let deltaRepo;
 
-  before(async () => {
+  beforeEach(async () => {
     const { ioc } = await Server.init();
     entities = await ioc.getEntities();
+    // TODO: Construct own sample data
     const sampleDataFile = path.join(__dirname, 'sample.delta.json');
     const sampleDataBuffer = await fs.readFile(sampleDataFile);
     const sampleDataText = sampleDataBuffer.toString();
@@ -27,7 +28,6 @@ describe('Delta repository', () => {
 
     const userRepo = await ioc.getUserRepo();
     user = await userRepo.insert(user);
-    await deltaRepo.process({ user, delta: sampleData });
   });
 
   it('populates all folders', async () => {
@@ -41,8 +41,9 @@ describe('Delta repository', () => {
         parentFolderId: it.parentReference.id.endsWith('!0') ? null : it.parentReference.id
       }));
 
-    const folderEntities = await entities.Folder.findAll();
+    await deltaRepo.process({ user, delta: sampleData });
 
+    const folderEntities = await entities.Folder.findAll();
     expect(JSON.parse(JSON.stringify(folderEntities))).to.eql(expected);
   });
 
@@ -57,8 +58,28 @@ describe('Delta repository', () => {
         parentFolderId: it.parentReference.id.endsWith('!0') ? null : it.parentReference.id
       }));
 
-    const fileEntities = await entities.File.findAll();
+    await deltaRepo.process({ user, delta: sampleData });
 
+    const fileEntities = await entities.File.findAll();
     expect(JSON.parse(JSON.stringify(fileEntities))).to.eql(expected);
   });
+
+  it('populates next token', async () => {
+    await deltaRepo.process({ user, delta: sampleData });
+
+    const deltaNextEntity = await entities.DeltaNext.findAll();
+
+    expect(deltaNextEntity[0].nextLink).to.equal(sampleData['@odata.nextLink']);
+    expect(deltaNextEntity[0].userId).to.equal(user.id);
+  });
+
+  it('is idempotent', async () => {
+    await deltaRepo.process({ user, delta: sampleData });
+
+    const deltaNextEntity = await entities.DeltaNext.findAll();
+
+    expect(deltaNextEntity[0].nextLink).to.equal(sampleData['@odata.nextLink']);
+    expect(deltaNextEntity[0].userId).to.equal(user.id);
+  });
+  // TODO: Deletes
 });
