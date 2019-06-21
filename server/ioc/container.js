@@ -2,16 +2,7 @@
 import axios from 'axios';
 import Sequelize from 'sequelize';
 import Logger from '../utils/logger';
-import OnedriveService from '../service/onedrive';
-import UserRepo from '../repo/user';
-
-const STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
-const ARGUMENT_NAMES = /([^\s,]+)/g;
-const getParamNames = func => {
-  const fnStr = func.toString().replace(STRIP_COMMENTS, '');
-  const result = fnStr.slice(fnStr.indexOf('(') + 1, fnStr.indexOf(')')).match(ARGUMENT_NAMES);
-  return result === null ? [] : result;
-};
+import dynamicRequire from '../utils/dynamic.require';
 
 const singletons = {
   getAxios: async () => axios,
@@ -23,13 +14,19 @@ const singletons = {
       logging: false
     });
   },
-  getOnedriveService: async ioc => new OnedriveService(
-    await ioc.getAxios(),
-    await ioc.getLogger()
-  ),
-  getUserRepo: async ioc => new UserRepo(await ioc.getDb()),
-  getLogger: async () => new Logger()
+  getLogger: async () => new Logger(),
 };
+
+const singletonClasses = {
+  OnedriveService: '../service/onedrive',
+  UserRepo: '../repo/user',
+  DeltaRepo: '../repo/delta'
+};
+
+Object.keys(singletonClasses).forEach(key => {
+  const constructor = dynamicRequire(singletonClasses[key]);
+  singletons[`get${key[0].toUpperCase()}${key.substring(1)}`] = ioc => ioc.instantiate(constructor);
+});
 
 const singletonCache = {};
 
@@ -47,10 +44,25 @@ export default class {
   }
 
   async instantiate(toInstantiate) {
+    const STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
+    const ARGUMENT_NAMES = /([^\s,]+)/g;
+    const getParamNames = func => {
+      const fnStr = func.toString().replace(STRIP_COMMENTS, '');
+      const result = fnStr.slice(fnStr.indexOf('(') + 1, fnStr.indexOf(')')).match(ARGUMENT_NAMES);
+      return result === null ? [] : result;
+    };
+
     const paramNames = getParamNames(toInstantiate);
     const paramValues = await Promise.all(paramNames
       .map(it => `get${it[0].toUpperCase()}${it.substring(1)}`)
-      .map(it => this[it]()));
+      .map(it => {
+        try {
+          return this[it]();
+        } catch (_err) {
+          console.log(it);
+          throw _err;
+        }
+      }));
     return new toInstantiate(...paramValues);
   }
 }

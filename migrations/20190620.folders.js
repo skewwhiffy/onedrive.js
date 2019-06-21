@@ -18,7 +18,14 @@ export default {
         allowNull: false
       },
       name: { type: DataTypes.TEXT, allowNull: false },
-      parentFolderId: { type: DataTypes.INTEGER, allowNull: true }
+      parentFolderId: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        references: {
+          model: 'folder',
+          key: 'id'
+        }
+      }
     });
   }
 };
