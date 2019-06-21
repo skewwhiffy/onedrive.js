@@ -19,6 +19,7 @@ const singletons = {
 
 const singletonClasses = {
   OnedriveService: '../service/onedrive',
+  Entities: '../repo/entities',
   UserRepo: '../repo/user',
   DeltaRepo: '../repo/delta'
 };

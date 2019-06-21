@@ -4,10 +4,10 @@ export default {
   up: async (query, DataTypes) => {
     await query.createTable('folder', {
       id: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
+        type: DataTypes.STRING,
         primaryKey: true,
-        autoIncrement: true
+        allowNull: false,
+        unique: true
       },
       userId: {
         type: DataTypes.INTEGER,

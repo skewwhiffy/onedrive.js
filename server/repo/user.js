@@ -1,31 +1,17 @@
 'use strict';
-import { DataTypes } from 'sequelize';
 
 export default class {
-  constructor(db) {
-    this.UserEntity = db.define('user', {
-      id: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        primaryKey: true,
-        autoIncrement: true
-      },
-      onedriveId: { type: DataTypes.TEXT, allowNull: false }, // TODO: Unique
-      displayName: { type: DataTypes.TEXT, allowNull: false },
-      refreshToken: { type: DataTypes.TEXT, allowNull: false }
-    }, {
-      timestamps: false,
-      freezeTableName: true,
-      returning: true
-    });
+  constructor(entities) {
+    this.entities = entities;
   }
 
   async get() {
-    const users = await this.UserEntity.findAll();
+    const users = await this.entities.User.findAll();
     return JSON.parse(JSON.stringify(users));
   }
 
   async insert(user) {
-    await this.UserEntity.create(user);
+    const inserted = await this.entities.User.create(user);
+    return JSON.parse(JSON.stringify(inserted));
   }
 }

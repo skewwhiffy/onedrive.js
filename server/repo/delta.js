@@ -1,42 +1,25 @@
 'use strict';
-import { DataTypes } from 'sequelize';
 
 export default class {
-  constructor(db) {
-    this.db = db;
-    this.DeltaEntity = db.define('folder', {
-      id: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        primaryKey: true,
-        autoIncrement: true
-      },
-      userId: {
-        type: DataTypes.INTEGER,
-        references: {
-          model: 'user',
-          key: 'id'
-        },
-        allowNull: false
-      },
-      name: { type: DataTypes.TEXT, allowNull: false },
-      parentFolderId: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        references: {
-          model: 'folder',
-          key: 'id'
-        }
-      }
-    });
+  constructor(entities) {
+    this.entities = entities;
   }
 
   async process({ user, delta }) {
     const items = delta.value;
-    for (let i = 0; i < items.length; i++) {
+    for (let i = 0; i < items.length; i += 1) {
       const item = items[i];
       if (item.folder) {
-        console.log('TODO: folder ' + item.name);
+        const parentId = item.parentReference.id;
+        const folderEntity = {
+          userId: user.id,
+          name: item.name,
+          id: item.id,
+          parentFolderId: parentId.endsWith('!0') ? null : parentId
+        };
+        /* eslint-disable no-await-in-loop */
+        await this.entities.Folder.create(folderEntity);
+        /* eslint-enable no-await-in-loop */
       } else {
         console.log('TODO: file ' + item.name);
       }

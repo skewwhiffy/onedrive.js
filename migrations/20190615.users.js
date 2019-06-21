@@ -9,7 +9,11 @@ export default {
         primaryKey: true,
         autoIncrement: true
       },
-      onedriveId: { type: DataTypes.TEXT, allowNull: false },
+      onedriveId: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+        unique: true
+      },
       displayName: { type: DataTypes.TEXT, allowNull: false },
       refreshToken: { type: DataTypes.TEXT, allowNull: false }
     });
