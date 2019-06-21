@@ -29,7 +29,7 @@ export default class {
       },
       userId: {
         type: DataTypes.INTEGER,
-        references: { model: this.UserEntity },
+        references: this.User,
         allowNull: false
       },
       name: { type: DataTypes.TEXT, allowNull: false },
@@ -40,6 +40,26 @@ export default class {
           model: 'folder',
           key: 'id'
         }
+      }
+    }, options);
+
+    this.File = db.define('file', {
+      id: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        primaryKey: true,
+        unique: true
+      },
+      userId: {
+        type: DataTypes.INTEGER,
+        references: { model: this.UserEntity },
+        allowNull: false
+      },
+      name: { type: DataTypes.TEXT, allowNull: false },
+      parentFolderId: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        references: this.Folder
       }
     }, options);
   }

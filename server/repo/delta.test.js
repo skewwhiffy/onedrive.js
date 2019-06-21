@@ -5,7 +5,7 @@ import fs from 'es6-fs';
 import Server from '../../test.utils/integration.setup';
 import { expect } from 'chai';
 
-describe.only('Delta repository', () => {
+describe('Delta repository', () => {
   let entities;
   let sampleData;
   let user;
@@ -44,5 +44,21 @@ describe.only('Delta repository', () => {
     const folderEntities = await entities.Folder.findAll();
 
     expect(JSON.parse(JSON.stringify(folderEntities))).to.eql(expected);
+  });
+
+  it('populates all files', async () => {
+    const expected = sampleData
+      .value
+      .filter(it => it.file)
+      .map(it => ({
+        userId: user.id,
+        name: it.name,
+        id: it.id,
+        parentFolderId: it.parentReference.id.endsWith('!0') ? null : it.parentReference.id
+      }));
+
+    const fileEntities = await entities.File.findAll();
+
+    expect(JSON.parse(JSON.stringify(fileEntities))).to.eql(expected);
   });
 });
