@@ -12,6 +12,7 @@ const controllerDirectory = path.join(__dirname, '../controller');
 export default {
   init: async ioc => {
     const app = await ioc.getApp();
+    const logger = await ioc.getLogger();
     const controllers = await fs.readdir(controllerDirectory);
     const controllerNames = controllers
       .filter(it => it.endsWith(controllerSuffix))
@@ -19,8 +20,17 @@ export default {
       .map(it => it.substring(0, it.length - controllerSuffix.length));
 
     const controllersWithRoutes = controllerNames
-      .map(it => ({ route: it, constructor: dynamicRequire(path.join(controllerDirectory, it)) }))
-      .map(({ route, constructor }) => ({ route, instance: new constructor() }));
+      .map(route => {
+        const controllerFile = path.join(controllerDirectory, route);
+        try {
+          const constructor = dynamicRequire(controllerFile);
+          const instance = new constructor();
+          return { route, instance };
+        } catch (err) {
+          logger.error(`Could not instantiate controller ${route}`);
+          throw err;
+        }
+      });
     const paths = _.flatten(controllersWithRoutes
       .map(({ route, instance }) => Object.keys(instance.routes).map(it => ({
         url: path.join(`/api/${route}`, it),

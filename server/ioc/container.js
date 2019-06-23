@@ -20,8 +20,9 @@ const singletons = {
 const singletonClasses = {
   OnedriveService: '../service/onedrive',
   Entities: '../repo/entities',
-  UserRepo: '../repo/user',
-  DeltaRepo: '../repo/delta'
+  DeltaRepo: '../repo/delta',
+  FileRepo: '../repo/file',
+  UserRepo: '../repo/user'
 };
 
 Object.keys(singletonClasses).forEach(key => {
@@ -45,6 +46,7 @@ export default class {
   }
 
   async instantiate(toInstantiate) {
+    const logger = await this.getLogger();
     const STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
     const ARGUMENT_NAMES = /([^\s,]+)/g;
     const getParamNames = func => {
@@ -60,7 +62,7 @@ export default class {
         try {
           return this[it]();
         } catch (_err) {
-          console.log(it);
+          logger.error(`Could not instantiate ${it}`);
           throw _err;
         }
       }));
