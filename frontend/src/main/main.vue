@@ -5,7 +5,7 @@
         <User @setUserId="setUserId" />
       </b-tab>
       <b-tab title="Files">
-        <File :userId="userId" />
+        <File :user-id="userId" />
       </b-tab>
     </b-tabs>
   </div>
@@ -18,7 +18,7 @@ import File from './file.vue';
 import UrlManipulator from '../url.manipulator';
 
 const urlManipulator = new UrlManipulator();
-const tabs = [ 'user', 'file' ];
+const tabs = ['user', 'file'];
 
 export default Vue.extend({
   name: 'Main',
@@ -27,7 +27,10 @@ export default Vue.extend({
     return {
       activeTabIndex: 0,
       userId: false
-    }
+    };
+  },
+  created() {
+    this.refreshActiveTabFromUrl();
   },
   methods: {
     tabChange(index) {
@@ -42,9 +45,6 @@ export default Vue.extend({
     setUserId(userId) {
       this.userId = userId;
     }
-  },
-  created() {
-    this.refreshActiveTabFromUrl();
   }
 });
 </script>

@@ -5,7 +5,7 @@
       <div class="row">
         <div class="col-sm-2">
           <ul>
-            <li><a :href="toFolder('..')">..</a>
+            <li><a :href="toFolder('..')">..</a></li>
             <li v-for="folder in folders" :key="folder.id">
               <a :href="toFolder(folder.name)">{{ folder.name }}</a>
             </li>
@@ -34,25 +34,27 @@ const api = new Api();
 const urlManipulator = new UrlManipulator();
 
 export default Vue.extend({
-  props: ['userId'],
+  name: 'File',
+  props: {
+    userId: {
+      type: Number,
+      default: 0
+    }
+  },
   data() {
     return {
       folders: [],
       loading: false,
       path: ''
-    }
-  },
-  name: 'File',
-  async created() {
-    await this.refresh();
+    };
   },
   watch: {
-    async userId(userId) {
+    async userId() {
       await this.refresh();
-    },
-    $route() {
-      console.log('Route change');
     }
+  },
+  async created() {
+    await this.refresh();
   },
   methods: {
     async refresh() {
