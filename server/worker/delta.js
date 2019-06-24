@@ -4,8 +4,9 @@ import _ from 'lodash';
 const maxPauseMillis = 60000;
 
 export default class {
-  constructor(logger, deltaRepo, userRepo, onedriveService) {
+  constructor(entities, logger, deltaRepo, userRepo, onedriveService) {
     this.currentPauseMillis = 1000;
+    this.entities = entities;
     this.deltaRepo = deltaRepo;
     this.userRepo = userRepo;
     this.onedriveService = onedriveService;
@@ -30,6 +31,8 @@ export default class {
       this.logger.info('That was new data');
       this.logger.info(`Old ${nextLink}`);
       this.logger.info(`New ${newNextLink}`);
+      const folders = await this.entities.Folder.findAll();
+      this.logger.info(`There are ${folders.length} folders in the DB`);
     }
   }
 
