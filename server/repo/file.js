@@ -15,11 +15,16 @@ export default class {
   }
 
   async upsertFolder(...folders) {
+    if (folders.length === 1 && Array.isArray(folders[0])) {
+      await this.upsertFolder(...folders[0]);
+      return;
+    }
     if (!folders || folders.length === 0) return;
     if (folders.length > 1) {
       // TODO: Parallelize if possible
       await this.upsertFolder(folders[0]);
       await this.upsertFolder(...folders.slice(1));
+      return;
     }
     const folder = folders[0];
     const toInsert = {
@@ -32,6 +37,7 @@ export default class {
   }
 
   async getFolders({ id: userId }, path) {
+    if (!path) return this.getFolders({ id: userId }, '/');
     const getFoldersInternal = async (pathParts, parentFolderId) => {
       const where = {
         userId,
@@ -39,7 +45,13 @@ export default class {
       };
       if (pathParts.length === 0) {
         const response = await this.entities.Folder.findAll({ where });
-        return JSON.parse(JSON.stringify(response));
+        return response
+          .map(folder => ({
+            id: folder.id,
+            name: folder.name,
+            userId: folder.userId,
+            parentFolderId: folder.parentFolderId || undefined
+          }));
       }
       [where.name] = pathParts;
       const response = await this.entities.Folder.findAll({ where });

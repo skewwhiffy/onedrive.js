@@ -20,14 +20,15 @@ export default {
       .map(it => it.substring(0, it.length - controllerSuffix.length));
 
     const controllersWithRoutes = controllerNames
-      .map(route => {
-        const controllerFile = path.join(controllerDirectory, route);
+      .map(controllerName => {
+        const controllerFile = path.join(controllerDirectory, controllerName);
         try {
           const constructor = dynamicRequire(controllerFile);
           const instance = new constructor();
+          const route = instance.baseRoute || controllerName;
           return { route, instance };
         } catch (err) {
-          logger.error(`Could not instantiate controller ${route}`);
+          logger.error(`Could not instantiate controller ${controllerName}`);
           throw err;
         }
       });
