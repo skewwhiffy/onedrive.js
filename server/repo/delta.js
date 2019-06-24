@@ -28,6 +28,7 @@ export default class {
           id: item.id,
           parentFolderId: parentId.endsWith('!0') ? null : parentId
         };
+        console.log('Folder:', item.name);
         // TODO: Optimize and parallelize this
         /* eslint-disable no-await-in-loop */
         await upsert(this.entities.Folder, { id: item.id }, folderEntity);

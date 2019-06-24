@@ -11,6 +11,14 @@ export default class {
     return response.data;
   }
 
+  async getSubfolders(userId, path) {
+    if (path === undefined) return this.getSubfolders(userId, '');
+    if (path.startsWith('/')) return this.getSubfolders(userId, path.substring(1));
+    if (path.endsWith('/')) return this.getSubfolders(userId, path.substring(0, path.length - 1));
+    const response = await this.axios.get(`/api/user/${userId}/folder/${path}`);
+    return response.data;
+  }
+
   async getUsers() {
     const response = await this.axios.get('/api/user');
     return response.data;

@@ -21,7 +21,7 @@ export default class {
     const { refreshToken } = user;
     const { accessToken } = await this.onedriveService.getAccessToken(refreshToken);
     const nextLink = await this.deltaRepo.getNextLink(user);
-    const delta = await this.onedriveService.getDelta(accessToken);
+    const delta = await this.onedriveService.getDelta(accessToken, nextLink);
     await this.deltaRepo.process({ user, delta });
     const newNextLink = delta['@odata.nextLink'];
     if (newNextLink === nextLink && this.currentPauseMillis < maxPauseMillis) {

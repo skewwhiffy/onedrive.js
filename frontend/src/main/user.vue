@@ -10,7 +10,7 @@
           {{ user.displayName }}
         </li>
       </ul>
-      <b-button @click="addUser">
+      <b-button v-if="users.length !== 1" @click="addUser">
         Add
       </b-button>
     </div>
@@ -21,10 +21,11 @@
 </template>
 
 <script>
+import Vue from 'vue';
 import Api from '../api/api';
 
 const api = new Api();
-export default {
+export default Vue.extend({
   name: 'Main',
   data() {
     return {
@@ -40,6 +41,9 @@ export default {
     async refreshUserList() {
       this.loading = true;
       this.users = await api.getUsers();
+      if (this.users.length === 1) {
+        this.$emit('setUserId', this.users[0].id);
+      }
       this.loginUrl = await api.getLoginUrl();
       this.loading = false;
     },
@@ -47,5 +51,5 @@ export default {
       window.location.href = this.loginUrl;
     }
   }
-};
+});
 </script>
