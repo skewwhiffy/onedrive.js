@@ -20,12 +20,7 @@ describe('GET /api/user', () => {
   });
 
   it('gets users', async () => {
-    const user = {
-      onedriveId: shortId(),
-      displayName: shortId(),
-      refreshToken: shortId()
-    };
-    await userRepo.insert(user);
+    const user = await Server.insertUser(ioc);
 
     const result = await server.get('/api/user');
 

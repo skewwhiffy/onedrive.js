@@ -1,7 +1,7 @@
 'use strict';
-import shortId from 'shortid';
 import { expect } from 'chai';
 import FakeAxios from '../../../test.utils/fake.axios';
+import Server from '../../../test.utils/integration.setup';
 import Api from './api';
 
 describe('api', () => {
@@ -21,13 +21,7 @@ describe('api', () => {
   });
 
   it('fetches users', async () => {
-    const user = {
-      onedriveId: shortId(),
-      displayName: shortId(),
-      refreshToken: shortId()
-    };
-    const users = await ioc.getUserRepo();
-    await users.insert(user);
+    const user = await Server.insertUser(ioc);
 
     const result = await api.getUsers();
 

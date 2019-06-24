@@ -1,5 +1,4 @@
 'use strict';
-import shortId from 'shortid';
 import path from 'path';
 import fs from 'es6-fs';
 import Server from '../../test.utils/integration.setup';
@@ -19,15 +18,8 @@ describe('Delta repository', () => {
     const sampleDataBuffer = await fs.readFile(sampleDataFile);
     const sampleDataText = sampleDataBuffer.toString();
     sampleData = JSON.parse(sampleDataText);
-    user = {
-      onedriveId: shortId(),
-      displayName: shortId(),
-      refreshToken: shortId()
-    };
+    user = await Server.insertUser(ioc);
     deltaRepo = await ioc.getDeltaRepo();
-
-    const userRepo = await ioc.getUserRepo();
-    user = await userRepo.insert(user);
   });
 
   it('populates all folders', async () => {

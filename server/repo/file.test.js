@@ -10,13 +10,7 @@ describe('File repository', () => {
 
   beforeEach(async () => {
     const { ioc } = await Server.init();
-    const userRepo = await ioc.getUserRepo();
-    user = {
-      onedriveId: shortId(),
-      displayName: shortId(),
-      refreshToken: shortId()
-    };
-    user = await userRepo.insert(user);
+    user = await Server.insertUser(ioc);
     fileRepo = await ioc.getFileRepo();
   });
 
