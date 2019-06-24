@@ -4,7 +4,7 @@ import shortId from 'shortid';
 import Server from '../../test.utils/integration.setup';
 import { expect } from 'chai';
 
-describe.only('File repository', () => {
+describe('File repository', () => {
   let user;
   let fileRepo;
 

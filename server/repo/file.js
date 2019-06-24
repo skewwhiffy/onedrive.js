@@ -32,9 +32,7 @@ export default class {
   }
 
   async getFolders({ id: userId }, path) {
-    let pathParts = path.split('/').filter(it => it);
-    let parentFolderId = null;
-    while (true) {
+    const getFoldersInternal = async (pathParts, parentFolderId) => {
       const where = {
         userId,
         parentFolderId
@@ -43,12 +41,12 @@ export default class {
         const response = await this.entities.Folder.findAll({ where });
         return JSON.parse(JSON.stringify(response));
       }
-      where.name = pathParts[0];
-      pathParts = pathParts.slice(1);
+      [where.name] = pathParts;
       const response = await this.entities.Folder.findAll({ where });
       if (response.length === 0) return [];
       if (response.length > 1) throw Error('Too many folders');
-      parentFolderId = response[0].id;
-    }
+      return getFoldersInternal(pathParts.slice(1), response[0].id);
+    };
+    return getFoldersInternal(path.split('/').filter(it => it), null);
   }
 }
