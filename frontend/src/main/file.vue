@@ -2,11 +2,21 @@
   <div>
     <h1>Files</h1>
     <div v-if="!loading">
-      <ul>
-        <li v-for="folder in folders" @click="toFolder(folder.name)" :key="folder.id">
-          {{ folder.name }}
-        </li>
-      </ul>
+      <div class="row">
+        <div class="col-sm-2">
+          <ul>
+            <li><a :href="toFolder('..')">..</a>
+            <li v-for="folder in folders" :key="folder.id">
+              <a :href="toFolder(folder.name)">{{ folder.name }}</a>
+            </li>
+          </ul>
+        </div>
+        <div class="col-sm-10">
+          <ul>
+            <li>File1</li>
+          </ul>
+        </div>
+      </div>
     </div>
     <div v-if="loading">
       <h2>Loading</h2>
@@ -15,6 +25,7 @@
 </template>
 
 <script>
+import path from 'path';
 import Vue from 'vue';
 import Api from '../api/api';
 import UrlManipulator from '../url.manipulator';
@@ -33,28 +44,26 @@ export default Vue.extend({
   },
   name: 'File',
   async created() {
-    await this.refreshFolders();
+    await this.refresh();
   },
   watch: {
     async userId(userId) {
-      await this.refreshFolders();
+      await this.refresh();
     },
     $route() {
       console.log('Route change');
     }
   },
   methods: {
-    async refreshFolders() {
+    async refresh() {
       if (!this.userId) return;
-      console.log('Refershing folders to ', urlManipulator.folderPath);
       this.loading = true;
       this.path = urlManipulator.folderPath;
       this.folders = await api.getSubfolders(this.userId, this.path);
       this.loading = false;
     },
-    async toFolder(folder) {
-      urlManipulator.folderPath = `${this.path}/${folder}`;
-      await this.refreshFolders();
+    toFolder(folder) {
+      return path.join('/file', this.path, folder);
     }
   }
 });
