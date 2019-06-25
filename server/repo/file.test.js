@@ -97,4 +97,32 @@ describe('File repository', () => {
 
     expect(response).to.eql(files);
   });
+
+  it('can get local unknown folders', async () => {
+    const localUnknown = _.range(5)
+      .map(it => ({
+        userId: user.id,
+        name: `folderUnknown${it + 1}`,
+        id: `folderUnknown${it + 1}Id`,
+        parentFolderId: rootFolder.id,
+        onedriveStatus: 'exists',
+        localStatus: 'unknown'
+      }));
+    const localExists = _.range(5)
+      .map(it => ({
+        userId: user.id,
+        name: `folderExists${it + 1}`,
+        id: `folderExists${it + 1}Id`,
+        parentFolderId: rootFolder.id,
+        onedriveStatus: 'exists',
+        localStatus: 'exists'
+      }));
+    await fileRepo.upsertFolder(...localUnknown, ...localExists);
+
+    const result = await fileRepo.getLocalUnknownFolders(user);
+    const limited = await fileRepo.getLocalUnknownFolders(user, 2);
+
+    expect(result).to.eql(localUnknown);
+    expect(limited).to.have.length(2);
+  });
 });

@@ -118,4 +118,25 @@ export default class {
         localStatus: 'unknown'
       }));
   }
+
+  async getLocalUnknownFolders({ id: userId }, limit) {
+    if (!limit) return this.getLocalUnknownFolders({ id: userId }, 1000);
+    const folders = await this.entities.Folder.findAll({
+      limit,
+      where: {
+        userId,
+        localStatus: 'unknown',
+        parentFolderId: { [Op.ne]: null }
+      }
+    });
+    return folders
+      .map(folder => ({
+        id: folder.id,
+        name: folder.name,
+        userId,
+        parentFolderId: folder.parentFolderId,
+        onedriveStatus: folder.onedriveStatus,
+        localStatus: folder.localStatus
+      }));
+  }
 }

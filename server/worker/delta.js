@@ -4,9 +4,8 @@ import autobind from 'auto-bind';
 const maxPauseMillis = 60000;
 
 export default class {
-  constructor(entities, logger, deltaRepo, userRepo, onedriveService) {
+  constructor(logger, deltaRepo, userRepo, onedriveService) {
     this.currentPauseMillis = 1000;
-    this.entities = entities;
     this.deltaRepo = deltaRepo;
     this.userRepo = userRepo;
     this.onedriveService = onedriveService;
