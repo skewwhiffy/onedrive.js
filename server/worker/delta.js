@@ -1,5 +1,5 @@
 'use strict';
-import _ from 'lodash';
+import autobind from 'auto-bind';
 
 const maxPauseMillis = 60000;
 
@@ -11,6 +11,7 @@ export default class {
     this.userRepo = userRepo;
     this.onedriveService = onedriveService;
     this.logger = logger;
+    autobind(this);
   }
 
   async run() {
@@ -23,16 +24,11 @@ export default class {
     const nextLink = await this.deltaRepo.getNextLink(user);
     const delta = await this.onedriveService.getDelta(accessToken, nextLink);
     await this.deltaRepo.process({ user, delta });
-    const newNextLink = delta['@odata.nextLink'];
-    if (newNextLink === nextLink && this.currentPauseMillis < maxPauseMillis) {
-      this.logger.info('No more data: holding back');
-      this.currentPauseMillis = _.max(maxPauseMillis, this.currentPauseMillis * 2);
+    if (delta.value.length === 0) {
+      this.logger.info('All changes processed: backing off');
+      this.currentPauseMillis = Math.min(maxPauseMillis, this.currentPauseMillis * 2);
     } else {
-      this.logger.info('That was new data');
-      this.logger.info(`Old ${nextLink}`);
-      this.logger.info(`New ${newNextLink}`);
-      const folders = await this.entities.Folder.findAll();
-      this.logger.info(`There are ${folders.length} folders in the DB`);
+      this.currentPauseMillis = 1000;
     }
   }
 

@@ -3,13 +3,14 @@ import autobind from 'auto-bind';
 
 export default class {
   constructor(print) {
-    /* eslint-disable no-console */
+    /* eslint-disable-next-line no-console */
     this.print = print || console.log;
-    /* eslint-enable no-console */
     autobind(this);
   }
 
   log(level, message) { this.print(`[${level}] : ${message}`); }
+
+  debug(message) { this.log('DEBUG', message); }
 
   info(message) { this.log('INFO', message); }
 

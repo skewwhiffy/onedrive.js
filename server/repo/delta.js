@@ -42,7 +42,7 @@ export default class {
       .filter(it => !it.file)
       .filter(it => !it.folder);
     if (notAccountedFor.length > 0) throw Error('I don\'t understand');
-    const nextLink = delta['@odata.nextLink'];
+    const nextLink = delta['@odata.nextLink'] || delta['@odata.deltaLink'];
     await upsert(this.entities.DeltaNext, { userId: user.id }, { userId: user.id, nextLink });
   }
 
