@@ -26,7 +26,8 @@ export default {
           key: 'id'
         }
       },
-      onedriveStatus: { type: DataTypes.STRING, allowNull: false }
+      onedriveStatus: { type: DataTypes.STRING, allowNull: false },
+      localStatus: { type: DataTypes.STRING, allowNull: false }
     });
   }
 };

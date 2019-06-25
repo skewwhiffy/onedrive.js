@@ -48,7 +48,8 @@ describe('Delta repository', () => {
         name: it.name,
         id: it.id,
         parentFolderId: it.parentReference.id.endsWith('!0') ? null : it.parentReference.id,
-        onedriveStatus: it.file.hashes.sha1Hash
+        onedriveStatus: it.file.hashes.sha1Hash,
+        localStatus: 'unknown'
       }));
 
     await deltaRepo.process({ user, delta: sampleData });

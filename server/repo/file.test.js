@@ -58,7 +58,8 @@ describe('File repository', () => {
       name: `file${it}`,
       id: `file${it}Id`,
       parentFolderId: rootFolder.id,
-      onedriveStatus: 'unknown'
+      onedriveStatus: 'unknown',
+      localStatus: 'unknown'
     }));
 
     await fileRepo.upsertFile(files);
@@ -80,7 +81,8 @@ describe('File repository', () => {
       name: `file${it}`,
       id: `file${it}Id`,
       parentFolderId: 'folder5Id',
-      onedriveStatus: 'unknown'
+      onedriveStatus: 'unknown',
+      localStatus: 'unknown'
     }));
     await fileRepo.upsertFolder(folders);
 

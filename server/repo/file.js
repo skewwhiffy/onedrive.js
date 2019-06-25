@@ -111,7 +111,8 @@ export default class {
         name: file.name,
         userId,
         parentFolderId,
-        onedriveStatus: file.onedriveStatus
+        onedriveStatus: file.onedriveStatus,
+        localStatus: 'unknown'
       }));
   }
 }

@@ -77,7 +77,8 @@ export default class {
         allowNull: true,
         references: this.Folder
       },
-      onedriveStatus: { type: DataTypes.STRING, allowNull: false }
+      onedriveStatus: { type: DataTypes.STRING, allowNull: false },
+      localStatus: { type: DataTypes.STRING, allowNull: false }
     }, options);
   }
 }
