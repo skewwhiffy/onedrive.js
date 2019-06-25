@@ -2,6 +2,13 @@
   <div>
     <h1>Files</h1>
     <div v-if="!loading">
+      <div>
+        <ul>
+          <li v-for="(crumb, index) in breadcrumbs" :key="index">
+            <a :href="crumb.link">{{ crumb.name }}</a>
+          </li>
+        </ul>
+      </div>
       <div class="row">
         <div class="col-sm-2">
           <ul>
@@ -50,6 +57,25 @@ export default Vue.extend({
       loading: false,
       path: ''
     };
+  },
+  computed: {
+    breadcrumbs() {
+      const pathParts = this.path.split('/').filter(it => it);
+      const breadcrumbs = [];
+      if (pathParts.length > 0) {
+        breadcrumbs.push({
+          name: 'root',
+          link: '/file'
+        });
+      }
+      breadcrumbs.push(...pathParts
+        .slice(0, pathParts.length - 1)
+        .map((name, index) => ({
+          name,
+          link: `/file/${pathParts.slice(0, index + 1).join('/')}`
+        })));
+      return breadcrumbs;
+    }
   },
   watch: {
     async userId() {
