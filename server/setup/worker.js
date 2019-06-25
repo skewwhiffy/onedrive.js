@@ -19,11 +19,15 @@ export default async ioc => {
     .map(name => dynamicRequire(path.join(workerDirectory, name)))
     .map(it => ioc.instantiate(it)));
   await Promise.all(workerInstances.map(async it => {
-    /* eslint-disable no-constant-condition */
+    /* eslint-disable-next-line no-constant-condition */
     while (true) {
-      /* eslint-enable no-constant-condition */
       /* eslint-disable no-await-in-loop */
-      await it.run();
+      try {
+        await it.run();
+      } catch (err) {
+        const logger = await ioc.getLogger();
+        logger.warn(err);
+      }
       await pause(it.pauseMillis);
       /* eslint-enable no-await-in-loop */
     }

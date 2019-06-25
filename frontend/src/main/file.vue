@@ -7,10 +7,12 @@
       </div>
       <div class="row">
         <div class="col-sm-2">
-          <ul>
-            <li><a :href="toFolder('..')">..</a></li>
+          <ul class="folder-list">
             <li v-for="folder in folders" :key="folder.id">
-              <a :href="toFolder(folder.name)">{{ folder.name }}</a>
+              <a :href="toFolder(folder.name)">
+                <font-awesome-icon icon="folder-open" />
+                {{ folder.name }}
+              </a>
             </li>
           </ul>
         </div>
@@ -30,6 +32,7 @@
 </template>
 
 <script>
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import path from 'path';
 import Vue from 'vue';
 import Api from '../api/api';
@@ -40,6 +43,7 @@ const urlManipulator = new UrlManipulator();
 
 export default Vue.extend({
   name: 'File',
+  components: { FontAwesomeIcon },
   props: {
     userId: {
       type: [Number, Boolean],
@@ -96,3 +100,9 @@ export default Vue.extend({
   }
 });
 </script>
+
+<style scoped lang=scss>
+.folder-list {
+  list-style-type: none;
+}
+</style>
