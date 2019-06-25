@@ -8,6 +8,7 @@ describe('Delta repository', () => {
   let entities;
   let sampleData;
   let user;
+  let syncStatusRepo;
   let deltaRepo;
 
   beforeEach(async () => {
@@ -19,6 +20,7 @@ describe('Delta repository', () => {
     const sampleDataText = sampleDataBuffer.toString();
     sampleData = JSON.parse(sampleDataText);
     user = await Server.insertUser(ioc);
+    syncStatusRepo = await ioc.getSyncStatusRepo();
     deltaRepo = await ioc.getDeltaRepo();
   });
 
@@ -60,23 +62,23 @@ describe('Delta repository', () => {
     expect(JSON.parse(JSON.stringify(fileEntities))).to.eql(expected);
   });
 
-  it('populates next token', async () => {
+  it('populates status and next token', async () => {
     await deltaRepo.process({ user, delta: sampleData });
 
-    const deltaNextEntity = await entities.DeltaNext.findAll();
+    const status = await syncStatusRepo.get(user);
 
-    expect(deltaNextEntity[0].nextLink).to.equal(sampleData['@odata.nextLink']);
-    expect(deltaNextEntity[0].userId).to.equal(user.id);
+    expect(status.nextLink).to.equal(sampleData['@odata.nextLink']);
+    expect(status.status).to.equal('onedriveSync');
   });
 
   it('is idempotent', async () => {
     await deltaRepo.process({ user, delta: sampleData });
     await deltaRepo.process({ user, delta: sampleData });
 
-    const deltaNextEntity = await entities.DeltaNext.findAll();
+    const status = await syncStatusRepo.get(user);
 
-    expect(deltaNextEntity[0].nextLink).to.equal(sampleData['@odata.nextLink']);
-    expect(deltaNextEntity[0].userId).to.equal(user.id);
+    expect(status.nextLink).to.equal(sampleData['@odata.nextLink']);
+    expect(status.status).to.equal('onedriveSync');
   });
-  // TODO: Deletes
+  // TODO: Test deletes
 });

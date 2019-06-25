@@ -10,9 +10,9 @@ const upsert = async (entity, where, values) => {
 };
 
 export default class {
-  constructor(logger, entities, fileRepo) {
+  constructor(logger, syncStatusRepo, fileRepo) {
     this.logger = logger;
-    this.entities = entities;
+    this.syncStatusRepo = syncStatusRepo;
     this.fileRepo = fileRepo;
   }
 
@@ -47,11 +47,8 @@ export default class {
       .filter(it => !it.folder);
     if (notAccountedFor.length > 0) throw Error('I don\'t understand');
     const nextLink = delta['@odata.nextLink'] || delta['@odata.deltaLink'];
-    await upsert(this.entities.DeltaNext, { userId: user.id }, { userId: user.id, nextLink });
-  }
-
-  async getNextLink(user) {
-    const existingDeltaNext = await this.entities.DeltaNext.findOne({ where: { userId: user.id } });
-    return existingDeltaNext ? existingDeltaNext.nextLink : null;
+    await this.syncStatusRepo.setNextLink(user, nextLink);
+    if (items.length === 0) await this.syncStatusRepo.setLocalSync(user);
+    else await this.syncStatusRepo.setOnedriveSync(user);
   }
 }

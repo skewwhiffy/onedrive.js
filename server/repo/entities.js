@@ -15,12 +15,12 @@ export default class {
         primaryKey: true,
         autoIncrement: true
       },
-      onedriveId: { type: DataTypes.TEXT, allowNull: false }, // TODO: Unique
+      onedriveId: { type: DataTypes.TEXT, allowNull: false, unique: true },
       displayName: { type: DataTypes.TEXT, allowNull: false },
       refreshToken: { type: DataTypes.TEXT, allowNull: false }
     }, options);
 
-    this.DeltaNext = db.define('deltaNext', {
+    this.SyncStatus = db.define('syncStatus', {
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -33,7 +33,8 @@ export default class {
         unique: true,
         allowNull: false
       },
-      nextLink: { type: DataTypes.STRING, allowNull: false }
+      status: { type: DataTypes.STRING, allowNull: false },
+      nextLink: { type: DataTypes.STRING, allowNull: true }
     }, options);
 
     this.Folder = db.define('folder', {

@@ -22,6 +22,7 @@ const singletonClasses = {
   Entities: '../repo/entities',
   DeltaRepo: '../repo/delta',
   FileRepo: '../repo/file',
+  SyncStatusRepo: '../repo/sync.status',
   UserRepo: '../repo/user'
 };
 

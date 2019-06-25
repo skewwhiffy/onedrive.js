@@ -2,7 +2,7 @@
 
 export default {
   up: async (query, DataTypes) => {
-    await query.createTable('deltaNext', {
+    await query.createTable('syncStatus', {
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -18,7 +18,8 @@ export default {
         unique: true,
         allowNull: false
       },
-      nextLink: { type: DataTypes.STRING, allowNull: false }
+      status: { type: DataTypes.STRING, allowNull: false },
+      nextLink: { type: DataTypes.STRING, allowNull: true }
     });
   }
 };
