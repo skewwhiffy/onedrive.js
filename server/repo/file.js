@@ -36,29 +36,42 @@ export default class {
     await upsert(this.entities.Folder, { id: folder.id }, toInsert);
   }
 
-  async getFolders({ id: userId }, path) {
+  async getFolderId({ id: userId }, path) {
     if (!path) return this.getFolders({ id: userId }, '/');
-    const getFoldersInternal = async (pathParts, parentFolderId) => {
-      const where = {
+    let pathParts = path.split('/').filter(it => it);
+    let folder = await this.entities.Folder.findOne({
+      where: {
         userId,
-        parentFolderId
-      };
-      if (pathParts.length === 0) {
-        const response = await this.entities.Folder.findAll({ where });
-        return response
-          .map(folder => ({
-            id: folder.id,
-            name: folder.name,
-            userId: folder.userId,
-            parentFolderId: folder.parentFolderId || undefined
-          }));
+        parentFolderId: null
       }
-      [where.name] = pathParts;
-      const response = await this.entities.Folder.findAll({ where });
-      if (response.length === 0) return [];
-      if (response.length > 1) throw Error('Too many folders');
-      return getFoldersInternal(pathParts.slice(1), response[0].id);
-    };
-    return getFoldersInternal(path.split('/').filter(it => it), null);
+    });
+    while (pathParts.length > 0) {
+      folder = await this.entities.Folder.findOne({
+        where: {
+          userId,
+          parentFolderId: folder.id,
+          name: pathParts[0]
+        }
+      });
+      pathParts = pathParts.slice(1);
+    }
+    return folder ? folder.id : false;
+  }
+
+  async getFolders({ id: userId }, path) {
+    const parentFolderId = await this.getFolderId({ id: userId }, path);
+    if (!parentFolderId) return [];
+    const folders = await this.entities.Folder.findAll({
+      where: {
+        parentFolderId,
+        userId
+      }
+    });
+    return folders.map(folder => ({
+      id: folder.id,
+      name: folder.name,
+      userId,
+      parentFolderId
+    }));
   }
 }

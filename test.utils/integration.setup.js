@@ -23,5 +23,15 @@ export default {
       refreshToken: shortId()
     };
     return userRepo.insert(user);
+  },
+  insertRootFolder: async (user, ioc) => {
+    const fileRepo = await ioc.getFileRepo();
+    const folder = {
+      userId: user.id,
+      name: 'root',
+      id: shortId()
+    };
+    await fileRepo.upsertFolder(folder);
+    return folder;
   }
 };
