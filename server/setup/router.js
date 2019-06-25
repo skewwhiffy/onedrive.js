@@ -42,15 +42,21 @@ export default {
         app[method](url, implementations[method]);
       });
     });
+    const serveIndex = async res => {
+      const file = await fs.readFile('resources/index.html');
+      res.send(file.toString());
+    };
     app.get('/', async (req, res) => {
       const { query } = req;
       if (query && query.code) {
         res.redirect(`/api/user/code/${query.code}`);
       } else {
-        const file = await fs.readFile('resources/index.html');
-        res.send(file.toString());
+        serveIndex(res);
       }
     });
     app.use(express.static('resources'));
+    app.get('*', async (req, res) => {
+      await serveIndex(res);
+    });
   }
 };
