@@ -24,10 +24,10 @@ export default class {
     const existingFoldersInDbById = _.keyBy(existingFoldersInDb, it => it.id);
     const newFolders = folders.filter(it => !Object.keys(existingFoldersInDbById).includes(it.id));
     const existingFoldersById = _.keyBy(folders, it => it.id);
-    await Promise
-      .all(Object
-        .keys(existingFoldersInDbById)
-        .map(id => existingFoldersInDbById[id].update(existingFoldersById[id])));
+    const updates = Object
+      .keys(existingFoldersInDbById)
+      .map(id => ({ db: existingFoldersInDbById[id], update: existingFoldersById[id] }));
+    await Promise.all(updates.map(({ db, update }) => db.update(update)));
     await this.entities.Folder.bulkCreate(newFolders);
   }
 
@@ -48,10 +48,10 @@ export default class {
     const existingFilesInDbById = _.keyBy(existingFilesInDb, it => it.id);
     const newFiles = files.filter(it => !Object.keys(existingFilesInDbById).includes(it.id));
     const existingFilesById = _.keyBy(files, it => it.id);
-    await Promise
-      .all(Object
-        .keys(existingFilesInDbById)
-        .map(id => existingFilesInDbById[id].update(existingFilesById[id])));
+    const updates = Object
+      .keys(existingFilesInDbById)
+      .map(id => ({ db: existingFilesInDbById[id], update: existingFilesById[id] }));
+    await Promise.all(updates.map(({ db, update }) => db.update(update)));
     await this.entities.File.bulkCreate(newFiles);
   }
 
