@@ -5,7 +5,7 @@
         <User @setUserId="setUserId" />
       </b-tab>
       <b-tab title="Files">
-        <File :user-id="userId" />
+        <File v-if="userId" :user-id="userId" />
       </b-tab>
     </b-tabs>
   </div>

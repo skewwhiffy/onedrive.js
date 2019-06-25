@@ -36,7 +36,7 @@ export default class {
         name: it.name,
         id: it.id,
         parentFolderId: it.parentReference.id,
-        onedriveStatus: it.file.hashes.sha1Hash,
+        onedriveStatus: it.deleted ? 'deleted' : it.file.hashes.sha1Hash,
         localStatus: 'unknown'
       }));
     await this.fileRepo.upsertFile(files);
