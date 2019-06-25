@@ -13,7 +13,9 @@
         </div>
         <div class="col-sm-10">
           <ul>
-            <li>File1</li>
+            <li v-for="file in files" :key="file.id">
+              {{ file.name }}
+            </li>
           </ul>
         </div>
       </div>
@@ -37,13 +39,14 @@ export default Vue.extend({
   name: 'File',
   props: {
     userId: {
-      type: Number,
-      default: 0
+      type: [Number, Boolean],
+      default: false
     }
   },
   data() {
     return {
       folders: [],
+      files: [],
       loading: false,
       path: ''
     };
@@ -61,7 +64,9 @@ export default Vue.extend({
       if (!this.userId) return;
       this.loading = true;
       this.path = urlManipulator.folderPath;
-      this.folders = await api.getSubfolders(this.userId, this.path);
+      const { folders, files } = await api.getSubfolders(this.userId, this.path);
+      this.folders = folders;
+      this.files = files;
       this.loading = false;
     },
     toFolder(folder) {

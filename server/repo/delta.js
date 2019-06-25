@@ -29,21 +29,19 @@ export default class {
         parentFolderId: it.parentReference.id.endsWith('!0') ? null : it.parentReference.id
       }));
     await this.fileRepo.upsertFolder(folders);
-    for (let i = 0; i < items.length; i += 1) {
-      const item = items[i];
-      if (!item.folder) {
-        const parentId = item.parentReference.id;
-        const fileEntity = {
-          userId: user.id,
-          name: item.name,
-          id: item.id,
-          parentFolderId: parentId.endsWith('!0') ? null : parentId
-        };
-        /* eslint-disable no-await-in-loop */
-        await upsert(this.entities.File, { id: item.id }, fileEntity);
-        /* eslint-enable no-await-in-loop */
-      }
-    }
+    const files = items
+      .filter(it => it.file)
+      .map(it => ({
+        userId: user.id,
+        name: it.name,
+        id: it.id,
+        parentFolderId: it.parentReference.id
+      }));
+    await this.fileRepo.upsertFile(files);
+    const notAccountedFor = items
+      .filter(it => !it.file)
+      .filter(it => !it.folder);
+    if (notAccountedFor.length > 0) throw Error('I don\'t understand');
     const nextLink = delta['@odata.nextLink'];
     await upsert(this.entities.DeltaNext, { userId: user.id }, { userId: user.id, nextLink });
   }

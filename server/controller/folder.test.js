@@ -17,10 +17,18 @@ describe('GET /api/user/:userId/folder/:pathToFolder', () => {
     fileRepo = await ioc.getFileRepo();
   });
 
-  it('returns root folders', async () => {
+  it('returns root folders and files', async () => {
     const userId = user.id.toString();
-    const folders = _.range(1)
+    const folders = _.range(3)
       .map(it => `folder${it}`)
+      .map(name => ({
+        userId,
+        name,
+        id: `${name}id`,
+        parentFolderId: rootFolder.id
+      }));
+    const files = _.range(3)
+      .map(it => `file${it}`)
       .map(name => ({
         userId,
         name,
@@ -29,12 +37,13 @@ describe('GET /api/user/:userId/folder/:pathToFolder', () => {
       }));
 
     await fileRepo.upsertFolder(folders);
+    await fileRepo.upsertFile(files);
 
     const result = await server.get(`/api/user/${user.id}/folder/`);
 
     expect(result.status).to.equal(200);
     const returnedFolders = result.body;
-    expect(returnedFolders).to.eql(folders);
+    expect(returnedFolders).to.eql({ folders, files });
   });
 
   it('returns deeper folders', async () => {
@@ -59,12 +68,21 @@ describe('GET /api/user/:userId/folder/:pathToFolder', () => {
         id: `${name}id`,
         parentFolderId: 'nextFolderId'
       }));
+    const files = _.range(3)
+      .map(it => `file${it}`)
+      .map(name => ({
+        userId,
+        name,
+        id: `${name}id`,
+        parentFolderId: 'nextFolderId'
+      }));
     await fileRepo.upsertFolder(topFolder, nextFolder, ...subFolders);
+    await fileRepo.upsertFile(files);
 
     const result = await server.get(`/api/user/${user.id}/folder/topFolder/nextFolder`);
 
     expect(result.status).to.equal(200);
     const returnedFolders = result.body;
-    expect(returnedFolders).to.eql(subFolders);
+    expect(returnedFolders).to.eql({ folders: subFolders, files });
   });
 });

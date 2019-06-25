@@ -1,4 +1,6 @@
 'use strict';
+import _ from 'lodash';
+import { Op } from 'sequelize';
 
 const upsert = async (entity, where, values) => {
   const existing = await entity.findOne({ where });
@@ -20,20 +22,22 @@ export default class {
       return;
     }
     if (!folders || folders.length === 0) return;
-    if (folders.length > 1) {
-      // TODO: Parallelize if possible
-      await this.upsertFolder(folders[0]);
-      await this.upsertFolder(...folders.slice(1));
-      return;
-    }
-    const folder = folders[0];
-    const toInsert = {
-      userId: folder.userId,
-      name: folder.name,
-      id: folder.id
-    };
-    if (folder.parentFolderId) toInsert.parentFolderId = folder.parentFolderId;
-    await upsert(this.entities.Folder, { id: folder.id }, toInsert);
+
+    const existingFoldersInDb = await this.entities.Folder.findAll({
+      where: {
+        id: {
+          [Op.in]: folders.map(it => it.id)
+        }
+      }
+    });
+    const existingFoldersInDbById = _.keyBy(existingFoldersInDb, it => it.id);
+    const newFolders = folders.filter(it => !Object.keys(existingFoldersInDbById).includes(it.id));
+    const existingFoldersById = _.keyBy(folders, it => it.id);
+    await Promise
+      .all(Object
+        .keys(existingFoldersInDbById)
+        .map(id => existingFoldersInDbById[id].update(existingFoldersById[id])));
+    await this.entities.Folder.bulkCreate(newFolders);
   }
 
   async upsertFile(...files) {
@@ -42,20 +46,22 @@ export default class {
       return;
     }
     if (!files || files.length === 0) return;
-    if (files.length > 1) {
-      // TODO: Parallelize if possible
-      await this.upsertFile(files[0]);
-      await this.upsertFile(...files.slice(1));
-      return;
-    }
-    const file = files[0];
-    const toInsert = {
-      userId: file.userId,
-      name: file.name,
-      id: file.id,
-      parentFolderId: file.parentFolderId
-    };
-    await upsert(this.entities.File, { id: file.id }, toInsert);
+
+    const existingFilesInDb = await this.entities.File.findAll({
+      where: {
+        id: {
+          [Op.in]: files.map(it => it.id)
+        }
+      }
+    });
+    const existingFilesInDbById = _.keyBy(existingFilesInDb, it => it.id);
+    const newFiles = files.filter(it => !Object.keys(existingFilesInDbById).includes(it.id));
+    const existingFilesById = _.keyBy(files, it => it.id);
+    await Promise
+      .all(Object
+        .keys(existingFilesInDbById)
+        .map(id => existingFilesInDbById[id].update(existingFilesById[id])));
+    await this.entities.File.bulkCreate(newFiles);
   }
 
   async getFolderId({ id: userId }, path) {
