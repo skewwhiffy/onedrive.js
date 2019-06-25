@@ -2,15 +2,6 @@
 import _ from 'lodash';
 import { Op } from 'sequelize';
 
-const upsert = async (entity, where, values) => {
-  const existing = await entity.findOne({ where });
-  if (existing) {
-    await existing.update(values);
-  } else {
-    await entity.create(values);
-  }
-};
-
 export default class {
   constructor(entities) {
     this.entities = entities;
@@ -119,7 +110,8 @@ export default class {
         id: file.id,
         name: file.name,
         userId,
-        parentFolderId
+        parentFolderId,
+        onedriveStatus: file.onedriveStatus
       }));
   }
 }

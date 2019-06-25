@@ -35,7 +35,8 @@ export default class {
         userId: user.id,
         name: it.name,
         id: it.id,
-        parentFolderId: it.parentReference.id
+        parentFolderId: it.parentReference.id,
+        onedriveStatus: it.file.hashes.sha1Hash
       }));
     await this.fileRepo.upsertFile(files);
     const notAccountedFor = items

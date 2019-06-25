@@ -33,7 +33,8 @@ describe('GET /api/user/:userId/folder/:pathToFolder', () => {
         userId,
         name,
         id: `${name}id`,
-        parentFolderId: rootFolder.id
+        parentFolderId: rootFolder.id,
+        onedriveStatus: 'unknown'
       }));
 
     await fileRepo.upsertFolder(folders);
@@ -74,7 +75,8 @@ describe('GET /api/user/:userId/folder/:pathToFolder', () => {
         userId,
         name,
         id: `${name}id`,
-        parentFolderId: 'nextFolderId'
+        parentFolderId: 'nextFolderId',
+        onedriveStatus: 'unknown'
       }));
     await fileRepo.upsertFolder(topFolder, nextFolder, ...subFolders);
     await fileRepo.upsertFile(files);
