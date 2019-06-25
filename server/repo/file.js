@@ -37,25 +37,27 @@ export default class {
   }
 
   async getFolderId({ id: userId }, path) {
-    if (!path) return this.getFolders({ id: userId }, '/');
-    let pathParts = path.split('/').filter(it => it);
-    let folder = await this.entities.Folder.findOne({
+    if (!path) return this.getFolderId({ id: userId }, '/');
+    const rootFolder = await this.entities.Folder.findOne({
       where: {
         userId,
         parentFolderId: null
       }
     });
-    while (pathParts.length > 0) {
-      folder = await this.entities.Folder.findOne({
+    const getFolderIdInternal = async (folderId, pathParts) => {
+      if (pathParts.length === 0) return folderId;
+      if (!folderId) return false;
+      const nextFolder = await this.entities.Folder.findOne({
         where: {
           userId,
-          parentFolderId: folder.id,
+          parentFolderId: folderId,
           name: pathParts[0]
         }
       });
-      pathParts = pathParts.slice(1);
-    }
-    return folder ? folder.id : false;
+      if (!nextFolder) return false;
+      return getFolderIdInternal(nextFolder.id, pathParts.slice(1));
+    };
+    return getFolderIdInternal(rootFolder.id, path.split('/').filter(it => it));
   }
 
   async getFolders({ id: userId }, path) {
@@ -67,11 +69,12 @@ export default class {
         userId
       }
     });
-    return folders.map(folder => ({
-      id: folder.id,
-      name: folder.name,
-      userId,
-      parentFolderId
-    }));
+    return folders
+      .map(folder => ({
+        id: folder.id,
+        name: folder.name,
+        userId,
+        parentFolderId
+      }));
   }
 }

@@ -6,19 +6,28 @@ import Server from '../../test.utils/integration.setup';
 describe('GET /api/user/:userId/folder/:pathToFolder', () => {
   let ioc;
   let user;
+  let rootFolder;
   let server;
   let fileRepo;
 
   beforeEach(async () => {
     ({ server, ioc } = await Server.init());
     user = await Server.insertUser(ioc);
+    rootFolder = await Server.insertRootFolder(user, ioc);
     fileRepo = await ioc.getFileRepo();
   });
 
   it('returns root folders', async () => {
-    const folders = _.range(3)
+    const userId = user.id.toString();
+    const folders = _.range(1)
       .map(it => `folder${it}`)
-      .map(name => ({ userId: user.id, name, id: `${name}id` }));
+      .map(name => ({
+        userId,
+        name,
+        id: `${name}id`,
+        parentFolderId: rootFolder.id
+      }));
+
     await fileRepo.upsertFolder(folders);
 
     const result = await server.get(`/api/user/${user.id}/folder/`);
@@ -29,9 +38,15 @@ describe('GET /api/user/:userId/folder/:pathToFolder', () => {
   });
 
   it('returns deeper folders', async () => {
-    const topFolder = { userId: user.id, name: 'topFolder', id: 'topFolderId' };
+    const userId = user.id.toString();
+    const topFolder = {
+      userId,
+      name: 'topFolder',
+      id: 'topFolderId',
+      parentFolderId: rootFolder.id
+    };
     const nextFolder = {
-      userId: user.id,
+      userId,
       name: 'nextFolder',
       id: 'nextFolderId',
       parentFolderId: 'topFolderId'
@@ -39,7 +54,7 @@ describe('GET /api/user/:userId/folder/:pathToFolder', () => {
     const subFolders = _.range(3)
       .map(it => `folder${it}`)
       .map(name => ({
-        userId: user.id,
+        userId,
         name,
         id: `${name}id`,
         parentFolderId: 'nextFolderId'

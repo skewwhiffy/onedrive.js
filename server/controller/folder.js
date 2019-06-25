@@ -3,11 +3,6 @@
 export default class {
   constructor() {
     this.routes = {
-      /*
-      folder: {
-        get: this.get
-      },
-      */
       'folder/:folder(*)': {
         get: this.get
       }
