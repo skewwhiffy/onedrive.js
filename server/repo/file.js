@@ -93,7 +93,8 @@ export default class {
         id: folder.id,
         name: folder.name,
         userId,
-        parentFolderId
+        parentFolderId,
+        onedriveStatus: folder.onedriveStatus
       }));
   }
 

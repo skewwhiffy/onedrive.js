@@ -20,7 +20,8 @@ describe('File repository', () => {
       userId: user.id,
       name: 'folder',
       id: 'folderId',
-      parentFolderId: rootFolder.id
+      parentFolderId: rootFolder.id,
+      onedriveStatus: 'unknown'
     };
 
     await fileRepo.upsertFolder(folder);
@@ -36,7 +37,8 @@ describe('File repository', () => {
         userId: user.id,
         name: `folder${it + 1}`,
         id: `folder${it + 1}Id`,
-        parentFolderId: it === 0 ? rootFolder.id : `folder${it}Id`
+        parentFolderId: it === 0 ? rootFolder.id : `folder${it}Id`,
+        onedriveStatus: 'unknown'
       }));
 
     await fileRepo.upsertFolder(folders);
@@ -74,7 +76,8 @@ describe('File repository', () => {
         userId: user.id,
         name: `folder${it + 1}`,
         id: `folder${it + 1}Id`,
-        parentFolderId: it === 0 ? rootFolder.id : `folder${it}Id`
+        parentFolderId: it === 0 ? rootFolder.id : `folder${it}Id`,
+        onedriveStatus: 'unknown'
       }));
     const files = _.range(5).map(it => ({
       userId: user.id,

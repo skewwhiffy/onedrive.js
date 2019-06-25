@@ -26,7 +26,8 @@ export default class {
         userId: user.id,
         name: it.name,
         id: it.id,
-        parentFolderId: it.parentReference.id.endsWith('!0') ? null : it.parentReference.id
+        parentFolderId: it.parentReference.id.endsWith('!0') ? null : it.parentReference.id,
+        onedriveStatus: it.deleted ? 'deleted' : 'exists'
       }));
     await this.fileRepo.upsertFolder(folders);
     const files = items

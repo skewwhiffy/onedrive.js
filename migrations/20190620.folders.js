@@ -25,7 +25,8 @@ export default {
           model: 'folder',
           key: 'id'
         }
-      }
+      },
+      onedriveStatus: { type: DataTypes.STRING, allowNull: false }
     });
   }
 };

@@ -29,7 +29,8 @@ export default {
     const folder = {
       userId: user.id,
       name: 'root',
-      id: shortId()
+      id: shortId(),
+      onedriveStatus: 'exists'
     };
     await fileRepo.upsertFolder(folder);
     return folder;

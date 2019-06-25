@@ -8,7 +8,8 @@
       <div class="row">
         <div class="col-sm-2">
           <ul class="folder-list">
-            <li v-for="folder in folders" :key="folder.id">
+            <li v-if="folders.length === 0">No folders</li>
+            <li v-for="folder in folders" :key="folder.id" class="text-truncate">
               <a :href="toFolder(folder.name)">
                 <font-awesome-icon icon="folder-open" />
                 {{ folder.name }}
@@ -17,8 +18,9 @@
           </ul>
         </div>
         <div class="col-sm-10">
-          <ul>
+          <ul class="file-list">
             <li v-for="file in files" :key="file.id">
+              <font-awesome-icon icon="file" />
               {{ file.name }}
             </li>
           </ul>
@@ -32,6 +34,7 @@
 </template>
 
 <script>
+import _ from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import path from 'path';
 import Vue from 'vue';
@@ -90,8 +93,8 @@ export default Vue.extend({
       this.loading = true;
       this.path = urlManipulator.folderPath;
       const { folders, files } = await api.getSubfolders(this.userId, this.path);
-      this.folders = folders;
-      this.files = files;
+      this.folders = _.sortBy(folders, it => it.name);
+      this.files = _.sortBy(files, it => it.name);
       this.loading = false;
     },
     toFolder(folder) {
@@ -102,7 +105,7 @@ export default Vue.extend({
 </script>
 
 <style scoped lang=scss>
-.folder-list {
+.folder-list, .file-list {
   list-style-type: none;
 }
 </style>

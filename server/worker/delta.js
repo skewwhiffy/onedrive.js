@@ -23,6 +23,7 @@ export default class {
     const { accessToken } = await this.onedriveService.getAccessToken(refreshToken);
     const nextLink = await this.deltaRepo.getNextLink(user);
     const delta = await this.onedriveService.getDelta(accessToken, nextLink);
+    console.log(delta);
     await this.deltaRepo.process({ user, delta });
     if (delta.value.length === 0) {
       this.logger.info('All changes processed: backing off');

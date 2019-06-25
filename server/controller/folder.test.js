@@ -25,7 +25,8 @@ describe('GET /api/user/:userId/folder/:pathToFolder', () => {
         userId,
         name,
         id: `${name}id`,
-        parentFolderId: rootFolder.id
+        parentFolderId: rootFolder.id,
+        onedriveStatus: 'unknown'
       }));
     const files = _.range(3)
       .map(it => `file${it}`)
@@ -54,13 +55,15 @@ describe('GET /api/user/:userId/folder/:pathToFolder', () => {
       userId,
       name: 'topFolder',
       id: 'topFolderId',
-      parentFolderId: rootFolder.id
+      parentFolderId: rootFolder.id,
+      onedriveStatus: 'unknown'
     };
     const nextFolder = {
       userId,
       name: 'nextFolder',
       id: 'nextFolderId',
-      parentFolderId: 'topFolderId'
+      parentFolderId: 'topFolderId',
+      onedriveStatus: 'unknown'
     };
     const subFolders = _.range(3)
       .map(it => `folder${it}`)
@@ -68,7 +71,8 @@ describe('GET /api/user/:userId/folder/:pathToFolder', () => {
         userId,
         name,
         id: `${name}id`,
-        parentFolderId: 'nextFolderId'
+        parentFolderId: 'nextFolderId',
+        onedriveStatus: 'unknown'
       }));
     const files = _.range(3)
       .map(it => `file${it}`)

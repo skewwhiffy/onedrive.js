@@ -56,7 +56,8 @@ export default class {
           model: 'folder',
           key: 'id'
         }
-      }
+      },
+      onedriveStatus: { type: DataTypes.STRING, allowNull: false }
     }, options);
 
     this.File = db.define('file', {
