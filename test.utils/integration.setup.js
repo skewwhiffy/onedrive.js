@@ -30,7 +30,8 @@ export default {
       userId: user.id,
       name: 'root',
       id: shortId(),
-      onedriveStatus: 'exists'
+      onedriveStatus: 'exists',
+      localStatus: 'unknown'
     };
     await fileRepo.upsertFolder(folder);
     return folder;

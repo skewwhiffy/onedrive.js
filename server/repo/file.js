@@ -94,7 +94,8 @@ export default class {
         name: folder.name,
         userId,
         parentFolderId,
-        onedriveStatus: folder.onedriveStatus
+        onedriveStatus: folder.onedriveStatus,
+        localStatus: folder.localStatus
       }));
   }
 

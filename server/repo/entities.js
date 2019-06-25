@@ -57,7 +57,8 @@ export default class {
           key: 'id'
         }
       },
-      onedriveStatus: { type: DataTypes.STRING, allowNull: false }
+      onedriveStatus: { type: DataTypes.STRING, allowNull: false },
+      localStatus: { type: DataTypes.STRING, allowNull: false }
     }, options);
 
     this.File = db.define('file', {

@@ -27,7 +27,8 @@ export default class {
         name: it.name,
         id: it.id,
         parentFolderId: it.parentReference.id.endsWith('!0') ? null : it.parentReference.id,
-        onedriveStatus: it.deleted ? 'deleted' : 'exists'
+        onedriveStatus: it.deleted ? 'deleted' : 'exists',
+        localStatus: 'unknown'
       }));
     await this.fileRepo.upsertFolder(folders);
     const files = items
