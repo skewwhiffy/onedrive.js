@@ -1,14 +1,19 @@
 'use strict';
 import shortId from 'shortid';
 import request from 'supertest';
+import { promises as fs } from 'memfs';
 import apiSetup from '../server/setup/api';
 import Logger from '../server/utils/logger';
 
 export default {
   init: async inject => {
-    const testConfig = { db: ':memory:' };
+    const testConfig = {
+      db: ':memory:',
+      syncDirectory: 'random'
+    };
     const defaultInjected = {
-      logger: new Logger(() => {})
+      logger: new Logger(() => {}),
+      fs
     };
     if (inject) Object.assign(defaultInjected, inject);
     const { app, ioc } = await apiSetup(testConfig, defaultInjected);

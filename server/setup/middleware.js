@@ -1,6 +1,6 @@
 'use strict';
 import dynamicRequire from '../utils/dynamic.require';
-import fs from 'es6-fs';
+import { promises as fs } from 'fs';
 import path from 'path';
 
 const middlewareDirectory = path.join(__dirname, '../middleware');

@@ -1,6 +1,6 @@
 'use strict';
 import sqlite from 'sqlite3';
-import fs from 'es6-fs';
+import { promises as fs } from 'fs';
 import apiSetup from './server/setup/api';
 import workerSetup from './server/setup/worker';
 import config from './config';

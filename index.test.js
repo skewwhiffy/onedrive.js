@@ -1,5 +1,5 @@
 'use strict';
-import fs from 'es6-fs';
+import { promises as fs } from 'fs';
 import shortId from 'shortid';
 import chai from 'chai';
 import dirtyChai from 'dirty-chai';

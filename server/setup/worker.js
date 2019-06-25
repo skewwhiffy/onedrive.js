@@ -1,5 +1,5 @@
 'use strict';
-import fs from 'es6-fs';
+import { promises as fs } from 'fs';
 import path from 'path';
 import dynamicRequire from '../utils/dynamic.require';
 

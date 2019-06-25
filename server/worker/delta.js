@@ -5,7 +5,7 @@ const maxPauseMillis = 60000;
 
 export default class {
   constructor(logger, deltaRepo, userRepo, onedriveService) {
-    this.currentPauseMillis = 1000;
+    this.currentPauseMillis = 100;
     this.deltaRepo = deltaRepo;
     this.userRepo = userRepo;
     this.onedriveService = onedriveService;
@@ -27,7 +27,7 @@ export default class {
       this.logger.info('All changes processed: backing off');
       this.currentPauseMillis = Math.min(maxPauseMillis, this.currentPauseMillis * 2);
     } else {
-      this.currentPauseMillis = 1000;
+      this.currentPauseMillis = 100;
     }
   }
 

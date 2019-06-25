@@ -1,6 +1,7 @@
 'use strict';
 import axios from 'axios';
 import Sequelize from 'sequelize';
+import { promises as fs } from 'fs';
 import Logger from '../utils/logger';
 import dynamicRequire from '../utils/dynamic.require';
 
@@ -14,6 +15,7 @@ const singletons = {
       logging: false
     });
   },
+  getFs: async () => fs,
   getLogger: async () => new Logger(),
 };
 

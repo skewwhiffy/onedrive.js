@@ -38,6 +38,9 @@ export default class {
     }
     if (!files || files.length === 0) return;
 
+    const folders = files.filter(it => it.onedriveStatus === 'exists');
+    if (folders.length > 0) throw Error(`You're inserting folder ${folders[0].name} into files`);
+
     const existingFilesInDb = await this.entities.File.findAll({
       where: {
         id: {
@@ -100,6 +103,18 @@ export default class {
       }));
   }
 
+  async getPath(item) {
+    const getAllParents = async (soFar) => {
+      if (!soFar[0].parentFolderId) return soFar;
+      const parent = await this.entities.Folder.findOne({
+        where: { id: soFar[0].parentFolderId }
+      });
+      return getAllParents([parent, ...soFar]);
+    };
+    const parents = await getAllParents([item]);
+    return parents.slice(1).map(it => it.name).join('/');
+  }
+
   async getFiles({ id: userId }, path) {
     const parentFolderId = await this.getFolderId({ id: userId }, path);
     const files = await this.entities.File.findAll({
@@ -117,6 +132,22 @@ export default class {
         onedriveStatus: file.onedriveStatus,
         localStatus: 'unknown'
       }));
+  }
+
+  async setLocalExistsFolders(...folders) {
+    if (folders.length === 1 && Array.isArray(folders[0])) {
+      await this.setLocalExistsFolders(...folders[0]);
+      return;
+    }
+    if (!folders || folders.length === 0) return;
+    const dbFolders = await this.entities.Folder.findAll({
+      where: {
+        id: {
+          [Op.in]: folders.map(it => it.id)
+        }
+      }
+    });
+    await Promise.all(dbFolders.map(it => it.update({ localStatus: 'exists' })));
   }
 
   async getLocalUnknownFolders({ id: userId }, limit) {

@@ -49,11 +49,13 @@ describe('File repository', () => {
     const secondResponse = await fileRepo.getFolders(user, 'folder1');
     const thirdResponse = await fileRepo.getFolders(user, 'folder1/folder2/folder3');
     const fourthResponse = await fileRepo.getFolders(user, 'folder1/whoops');
+    const pathResponse = await fileRepo.getPath(folders[4]);
 
     expect(firstResponse).to.eql([folders[0]]);
     expect(secondResponse).to.eql([folders[1]]);
     expect(thirdResponse).to.eql([folders[3]]);
     expect(fourthResponse).to.eql([]);
+    expect(pathResponse).to.equal('folder1/folder2/folder3/folder4/folder5');
   });
 
   it('can insert files at root and retrieve', async () => {

@@ -1,6 +1,6 @@
 'use strict';
 import path from 'path';
-import fs from 'es6-fs';
+import { promises as fs } from 'fs';
 import Server from '../../test.utils/integration.setup';
 import { expect } from 'chai';
 
