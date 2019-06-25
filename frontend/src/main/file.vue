@@ -1,41 +1,37 @@
 <template>
   <div>
     <h1>Files</h1>
-    <div v-if="!loading">
-      <div>
-        <b-breadcrumb :items="breadcrumbs" />
-      </div>
-      <div class="row">
-        <div class="col-sm-2">
-          <ul class="folder-list">
-            <li v-if="folders.length === 0">
-              No folders
-            </li>
-            <li v-for="folder in folders" :key="folder.id" class="text-truncate">
-              <a :href="toFolder(folder.name)">
-                <font-awesome-icon icon="folder-open" />
-                {{ folder.name }}
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div class="col-sm-10">
-          <ul class="file-list">
-            <li v-for="file in files" :key="file.id">
-              <font-awesome-icon icon="file" />
-              {{ file.name }}
-            </li>
-          </ul>
-        </div>
-      </div>
+    <div>
+      <b-breadcrumb :items="breadcrumbs" />
     </div>
-    <div v-if="loading">
-      <h2>Loading</h2>
+    <div class="row">
+      <div class="col-sm-2">
+        <ul class="folder-list">
+          <li v-if="folders.length === 0">
+            No folders
+          </li>
+          <li v-for="folder in folders" :key="folder.id" class="text-truncate">
+            <a :href="toFolder(folder.name)">
+              <font-awesome-icon icon="folder-open" />
+                {{ folder.name }}
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="col-sm-10">
+        <ul class="file-list">
+          <li v-for="file in files" :key="file.id">
+            <font-awesome-icon icon="file" />
+              {{ file.name }}
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import { DateTime } from 'luxon';
 import _ from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import path from 'path';
@@ -53,14 +49,19 @@ export default Vue.extend({
     userId: {
       type: [Number, Boolean],
       default: false
+    },
+    userStatus: {
+      type: String,
+      required: true
     }
   },
   data() {
     return {
       folders: [],
       files: [],
-      loading: false,
-      path: ''
+      path: '',
+      refreshInterval: 0,
+      nextPoll: false
     };
   },
   computed: {
@@ -84,23 +85,46 @@ export default Vue.extend({
   watch: {
     async userId() {
       await this.refresh();
+    },
+    async userStatus() {
+      switch (this.userStatus) {
+        case 'onedriveSync':
+          this.refreshInterval = 5;
+          break;
+        case 'localSync':
+          this.refreshInterval = 30;
+          break;
+        default:
+          this.refreshInterval = 0;
+      }
     }
   },
   async created() {
-    await this.refresh();
+    this.refresh();
+    this.poll();
+  },
+  async destroyed() {
+    this.refreshInterval = -1;
   },
   methods: {
     async refresh() {
       if (!this.userId) return;
-      this.loading = true;
       this.path = urlManipulator.folderPath;
       const { folders, files } = await api.getSubfolders(this.userId, this.path);
       this.folders = _.sortBy(folders, it => it.name);
       this.files = _.sortBy(files, it => it.name);
-      this.loading = false;
     },
     toFolder(folder) {
       return path.join('/file', this.path, folder);
+    },
+    async poll() {
+      const now = DateTime.local();
+      if (this.refreshInterval < 0) return;
+      if (this.refreshInterval && (!this.nextPoll || this.nextPoll < now)) {
+        await this.refresh();
+        this.nextPoll = now.plus({ seconds: this.refreshInterval });
+      }
+      setTimeout(this.poll, 1000);
     }
   }
 });

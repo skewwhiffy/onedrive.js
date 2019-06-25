@@ -2,10 +2,10 @@
   <div>
     <b-tabs v-model="activeTabIndex" @input="tabChange">
       <b-tab title="Users">
-        <User @setUserId="setUserId" />
+        <User @setUserStatus="setUserStatus" @setUserId="setUserId" />
       </b-tab>
       <b-tab title="Files">
-        <File v-if="userId" :user-id="userId" />
+        <File v-if="userId" :user-id="userId" :user-status="userStatus" />
       </b-tab>
     </b-tabs>
   </div>
@@ -26,7 +26,8 @@ export default Vue.extend({
   data() {
     return {
       activeTabIndex: 0,
-      userId: false
+      userId: false,
+      userStatus: 'unknown'
     };
   },
   created() {
@@ -44,6 +45,9 @@ export default Vue.extend({
     },
     setUserId(userId) {
       this.userId = userId;
+    },
+    setUserStatus(status) {
+      this.userStatus = status;
     }
   }
 });

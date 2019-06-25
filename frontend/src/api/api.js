@@ -19,6 +19,11 @@ export default class {
     return response.data;
   }
 
+  async getStatus(userId) {
+    const response = await this.axios.get(`/api/user/${userId}/status`);
+    return response.data;
+  }
+
   async getUsers() {
     const response = await this.axios.get('/api/user');
     return response.data;

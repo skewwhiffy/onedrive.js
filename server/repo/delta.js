@@ -1,14 +1,5 @@
 'use strict';
 
-const upsert = async (entity, where, values) => {
-  const existing = await entity.findOne({ where });
-  if (existing) {
-    await existing.update(values);
-  } else {
-    await entity.create(values);
-  }
-};
-
 export default class {
   constructor(logger, syncStatusRepo, fileRepo) {
     this.logger = logger;
@@ -30,7 +21,9 @@ export default class {
         onedriveStatus: it.deleted ? 'deleted' : 'exists',
         localStatus: 'unknown'
       }));
+    this.logger.info(`Processing ${folders.length} folders`);
     await this.fileRepo.upsertFolder(folders);
+
     const files = items
       .filter(it => it.file)
       .map(it => ({
@@ -41,6 +34,7 @@ export default class {
         onedriveStatus: it.deleted ? 'deleted' : it.file.hashes.sha1Hash,
         localStatus: 'unknown'
       }));
+    this.logger.info(`Processing ${files.length} files`);
     await this.fileRepo.upsertFile(files);
     const notAccountedFor = items
       .filter(it => !it.file)
@@ -50,5 +44,10 @@ export default class {
     await this.syncStatusRepo.setNextLink(user, nextLink);
     if (items.length === 0) await this.syncStatusRepo.setLocalSync(user);
     else await this.syncStatusRepo.setOnedriveSync(user);
+  }
+
+  async getNextLink({ id }) {
+    const { nextLink } = await this.syncStatusRepo.get({ id });
+    return nextLink;
   }
 }

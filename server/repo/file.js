@@ -63,6 +63,7 @@ export default class {
         parentFolderId: null
       }
     });
+    if (!rootFolder) return false;
     const getFolderIdInternal = async (folderId, pathParts) => {
       if (pathParts.length === 0) return folderId;
       if (!folderId) return false;
