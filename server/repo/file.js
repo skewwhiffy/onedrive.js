@@ -36,6 +36,28 @@ export default class {
     await upsert(this.entities.Folder, { id: folder.id }, toInsert);
   }
 
+  async upsertFile(...files) {
+    if (files.length === 1 && Array.isArray(files[0])) {
+      await this.upsertFile(...files[0]);
+      return;
+    }
+    if (!files || files.length === 0) return;
+    if (files.length > 1) {
+      // TODO: Parallelize if possible
+      await this.upsertFile(files[0]);
+      await this.upsertFile(...files.slice(1));
+      return;
+    }
+    const file = files[0];
+    const toInsert = {
+      userId: file.userId,
+      name: file.name,
+      id: file.id,
+      parentFolderId: file.parentFolderId
+    };
+    await upsert(this.entities.File, { id: file.id }, toInsert);
+  }
+
   async getFolderId({ id: userId }, path) {
     if (!path) return this.getFolderId({ id: userId }, '/');
     const rootFolder = await this.entities.Folder.findOne({
@@ -73,6 +95,23 @@ export default class {
       .map(folder => ({
         id: folder.id,
         name: folder.name,
+        userId,
+        parentFolderId
+      }));
+  }
+
+  async getFiles({ id: userId }, path) {
+    const parentFolderId = await this.getFolderId({ id: userId }, path);
+    const files = await this.entities.File.findAll({
+      where: {
+        parentFolderId,
+        userId
+      }
+    });
+    return files
+      .map(file => ({
+        id: file.id,
+        name: file.name,
         userId,
         parentFolderId
       }));

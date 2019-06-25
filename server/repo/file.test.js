@@ -51,4 +51,40 @@ describe('File repository', () => {
     expect(thirdResponse).to.eql([folders[3]]);
     expect(fourthResponse).to.eql([]);
   });
+
+  it('can insert files at root and retrieve', async () => {
+    const files = _.range(5).map(it => ({
+      userId: user.id,
+      name: `file${it}`,
+      id: `file${it}Id`,
+      parentFolderId: rootFolder.id
+    }));
+
+    await fileRepo.upsertFile(files);
+    const response = await fileRepo.getFiles(user, '/');
+
+    expect(response).to.eql(files);
+  });
+
+  it('can insert files deeper than root and retrieve', async () => {
+    const folders = _.range(5)
+      .map(it => ({
+        userId: user.id,
+        name: `folder${it + 1}`,
+        id: `folder${it + 1}Id`,
+        parentFolderId: it === 0 ? rootFolder.id : `folder${it}Id`
+      }));
+    const files = _.range(5).map(it => ({
+      userId: user.id,
+      name: `file${it}`,
+      id: `file${it}Id`,
+      parentFolderId: 'folder5Id'
+    }));
+    await fileRepo.upsertFolder(folders);
+
+    await fileRepo.upsertFile(files);
+    const response = await fileRepo.getFiles(user, 'folder1/folder2/folder3/folder4/folder5');
+
+    expect(response).to.eql(files);
+  });
 });
