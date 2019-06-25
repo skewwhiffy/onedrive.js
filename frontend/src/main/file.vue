@@ -8,7 +8,9 @@
       <div class="row">
         <div class="col-sm-2">
           <ul class="folder-list">
-            <li v-if="folders.length === 0">No folders</li>
+            <li v-if="folders.length === 0">
+              No folders
+            </li>
             <li v-for="folder in folders" :key="folder.id" class="text-truncate">
               <a :href="toFolder(folder.name)">
                 <font-awesome-icon icon="folder-open" />
