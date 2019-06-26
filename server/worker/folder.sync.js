@@ -10,7 +10,7 @@ export default class {
     this.userRepo = userRepo;
     this.syncStatusRepo = syncStatusRepo;
     this.fileRepo = fileRepo;
-    this.pauseMillis = 1000;
+    this.pauseMillis = 100;
     autobind(this);
   }
 
@@ -27,7 +27,7 @@ export default class {
     const status = await this.syncStatusRepo.get(user);
     if (status.status !== 'localSync') return;
 
-    const folders = await this.fileRepo.getLocalUnknownFolders(user, 20);
+    const folders = await this.fileRepo.getLocalUnknownFolders(user, 50);
     const foldersToEnsureExistLocally = folders.filter(it => it.onedriveStatus === 'exists');
     let foldersAdded = 0;
     await Promise.all(foldersToEnsureExistLocally.map(async it => {
