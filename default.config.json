@@ -1,4 +1,5 @@
 {
+  "cacheDirectory": "~/.config/onedrive.js/cache",
   "syncDirectory": "~/onedrive.js",
   "db": "~/.config/onedrive.js/db.sqlite"
 }

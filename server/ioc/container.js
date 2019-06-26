@@ -21,6 +21,7 @@ const singletons = {
 
 const singletonClasses = {
   OnedriveService: '../service/onedrive',
+  ShaGenerator: '../service/sha.generator',
   Entities: '../repo/entities',
   DeltaRepo: '../repo/delta',
   FileRepo: '../repo/file',

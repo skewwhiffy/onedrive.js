@@ -1,13 +1,15 @@
 'use strict';
 import { expect } from 'chai';
 import path from 'path';
+import { promises as fs } from 'fs';
 import ShaGenerator from './sha.generator';
 
 describe('Sha generator', () => {
   let generator;
 
   beforeEach(() => {
-    generator = new ShaGenerator();
+    // TODO: Mock up using in memory file system
+    generator = new ShaGenerator(fs);
   });
 
   it('generates sha correctly', async () => {

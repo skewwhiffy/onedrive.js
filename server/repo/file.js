@@ -170,4 +170,25 @@ export default class {
         localStatus: folder.localStatus
       }));
   }
+
+  async getLocalUnknownFiles({ id: userId }, limit) {
+    if (!limit) return this.getLocalUnknownFiles({ id: userId }, 1000);
+    const files = await this.entities.File.findAll({
+      limit,
+      where: {
+        userId,
+        localStatus: 'unknown'
+      }
+    });
+
+    return files
+      .map(file => ({
+        id: file.id,
+        name: file.name,
+        userId,
+        parentFolderId: file.parentFolderId,
+        onedriveStatus: file.onedriveStatus,
+        localStatus: file.onedriveStatus
+      }));
+  }
 }

@@ -15,8 +15,8 @@ const init = async () => {
   }
   const configFileBuffer = await fs.readFile(configFilename);
   const config = JSON.parse(configFileBuffer.toString());
-  config.db = untildify(config.db);
-  config.syncDirectory = untildify(config.syncDirectory);
+  ['db', 'syncDirectory', 'cacheDirectory']
+    .forEach(key => { config[key] = untildify(config[key]); });
   return config;
 };
 
