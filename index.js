@@ -1,15 +1,12 @@
 'use strict';
 import sqlite from 'sqlite3';
-import { promises as fs } from 'fs';
 import apiSetup from './server/setup/api';
 import workerSetup from './server/setup/worker';
-import config from './config';
+import Config from './config';
 
 const server = async () => {
   const port = 38080;
-
-  // Ensure config directory exists
-  await fs.mkdir(config.configDirectory, { recursive: true });
+  const config = await Config.init();
 
   // Ensure DB exists
   const db = new sqlite.Database(config.db);

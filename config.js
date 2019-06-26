@@ -1,13 +1,23 @@
 'use strict';
-import os from 'os';
+import { promises as fs } from 'fs';
+import untildify from 'untildify';
 import path from 'path';
+import os from 'os';
 
-const homeDirectory = os.homedir();
-const configDirectory = path.join(homeDirectory, '.config/onedrive.js');
-const syncDirectory = path.join(homeDirectory, 'onedrive.js');
-
-export default {
-  configDirectory,
-  syncDirectory,
-  db: path.join(configDirectory, 'db.sqlite')
+const init = async () => {
+  const configDirectory = path.join(os.homedir(), '.config/onedrive.js');
+  const configFilename = path.join(configDirectory, 'config.json');
+  await fs.mkdir(configDirectory, { recursive: true });
+  try {
+    await fs.access(configFilename);
+  } catch (err) {
+    await fs.copyFile('./default.config.json', configFilename);
+  }
+  const configFileBuffer = await fs.readFile(configFilename);
+  const config = JSON.parse(configFileBuffer.toString());
+  config.db = untildify(config.db);
+  config.syncDirectory = untildify(config.syncDirectory);
+  return config;
 };
+
+export default { init };
