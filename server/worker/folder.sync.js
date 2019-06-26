@@ -2,6 +2,8 @@
 import path from 'path';
 import autobind from 'auto-bind';
 
+const maxPauseMillis = 60000;
+
 export default class {
   constructor(logger, config, fs, userRepo, syncStatusRepo, fileRepo) {
     this.logger = logger;
@@ -10,7 +12,7 @@ export default class {
     this.userRepo = userRepo;
     this.syncStatusRepo = syncStatusRepo;
     this.fileRepo = fileRepo;
-    this.pauseMillis = 100;
+    this.currentPauseMillis = 100;
     autobind(this);
   }
 
@@ -28,6 +30,11 @@ export default class {
     if (status.status !== 'localSync') return;
 
     const folders = await this.fileRepo.getLocalUnknownFolders(user, 50);
+    if (folders.length === 0) {
+      this.logger.info('Folders created, backing off');
+      this.currentPauseMillis = Math.min(maxPauseMillis, this.currentPauseMillis * 2);
+      return;
+    }
     const foldersToEnsureExistLocally = folders.filter(it => it.onedriveStatus === 'exists');
     let foldersAdded = 0;
     await Promise.all(foldersToEnsureExistLocally.map(async it => {
@@ -40,7 +47,11 @@ export default class {
         foldersAdded += 1;
       }
     }));
-    this.logger.info(`Created ${foldersAdded} folders`);
+    if (foldersAdded === 0) this.logger.info(`Created ${foldersAdded} folders`);
     await this.fileRepo.setLocalExistsFolders(folders);
+  }
+
+  get pauseMillis() {
+    return this.currentPauseMillis;
   }
 }
