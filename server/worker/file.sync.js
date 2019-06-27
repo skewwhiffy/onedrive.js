@@ -7,8 +7,8 @@ import fs from 'fs'; // TODO: Import through container so that we can mock.
 // TODO: Currently, we inject fs.promises as fs
 
 const maxPauseMillis = 60000;
-// TODO: Move to config. Although 7 *does* seem optimal
-const numberOfDownloads = 7;
+// TODO: Move to config. Although this *does* seem optimal
+const numberOfDownloads = 25;
 
 export default class {
   constructor(
