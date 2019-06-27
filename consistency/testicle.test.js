@@ -7,7 +7,7 @@ import { expect } from 'chai';
 import Config from '../config';
 import apiSetup from '../server/setup/api';
 
-describe.only('Testicle', () => {
+describe.skip('Testicle', () => {
   let userRepo;
   let onedriveService;
   let fileRepo;

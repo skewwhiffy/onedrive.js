@@ -3,11 +3,13 @@ import { expect } from 'chai';
 import { promises as fs } from 'fs';
 import untildify from 'untildify';
 import path from 'path';
+import ShaGenerator from '../server/service/sha.generator';
 
 describe('Folders', function desc() {
   this.timeout(10000);
   const existing = '~/OneDrive';
   const toCheck = '~/onedrive.js';
+  const shaGenerator = new ShaGenerator(fs);
 
   it('are consistent', async () => {
     const originalQueue = [''];
@@ -31,5 +33,33 @@ describe('Folders', function desc() {
       check([...queue.slice(1), ...newDirectories.map(it => path.join(queue[0], it))]);
     };
     check(originalQueue);
+  });
+
+  it('checking consistency for 10 random files', async () => {
+    const found = [];
+    const toCheckAbs = untildify(toCheck);
+    const traverseFolders = async root => {
+      if (found.length >= 10) return;
+      const originalPath = path.join(toCheckAbs, root);
+      const items = await fs.readdir(originalPath);
+      const itemsWithLstat = await Promise.all(items
+        .map(async name => ({ name, lstat: await fs.lstat(path.join(toCheckAbs, root, name)) })));
+      const directories = itemsWithLstat.filter(it => it.lstat.isDirectory()).map(it => it.name);
+      const files = itemsWithLstat.filter(it => !it.lstat.isDirectory()).map(it => it.name);
+      found.push(...files.map(it => path.join(root, it)));
+      const newRoots = directories.map(it => path.join(root, it));
+      await Promise.all(newRoots.map(it => traverseFolders(it)));
+    };
+    await traverseFolders('');
+
+    expect(found).to.have.length.at.least(10);
+    await Promise.all(found.map(async file => {
+      const [existingSha, toCheckSha] = await Promise.all(
+        [existing, toCheck]
+          .map(it => path.join(it, file))
+          .map(it => shaGenerator.hash(it))
+      );
+      expect(existingSha).to.equal(toCheckSha);
+    }));
   });
 });
