@@ -42,6 +42,7 @@ describe.skip('Testicle', () => {
     });
     await endPromise;
     const sha = await shaGenerator.hash(target);
+    /* eslint-disable-next-line no-console */
     console.log(target);
     expect(sha).to.equal(file.onedriveStatus);
   });

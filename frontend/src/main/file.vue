@@ -13,7 +13,7 @@
           <li v-for="folder in folders" :key="folder.id" class="text-truncate">
             <a :href="toFolder(folder.name)">
               <font-awesome-icon icon="folder-open" />
-                {{ folder.name }}
+              {{ folder.name }}
             </a>
           </li>
         </ul>
@@ -22,7 +22,7 @@
         <ul class="file-list">
           <li v-for="file in files" :key="file.id">
             <font-awesome-icon icon="file" />
-              {{ file.name }}
+            {{ file.name }}
           </li>
         </ul>
       </div>

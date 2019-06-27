@@ -58,7 +58,9 @@ export default class {
     }
 
     const cacheFileRelativePath = shortId();
-    const cacheFilePath = path.join(this.config.cacheDirectory, cacheFileRelativePath);
+    const cacheFilePath = path.join(
+      this.config.cacheDirectory, cacheFileRelativePath
+    );
     const relativePath = await this.fileRepo.getPath(file);
     this.downloading[cacheFileRelativePath] = path.join(this.config.syncDirectory, relativePath);
     console.log(this.downloading);
