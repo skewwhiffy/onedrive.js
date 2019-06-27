@@ -2,6 +2,7 @@
 import _ from 'lodash';
 import { Op } from 'sequelize';
 
+// TODO: Split this repo
 export default class {
   constructor(entities) {
     this.entities = entities;
@@ -148,6 +149,13 @@ export default class {
       }
     });
     await Promise.all(dbFolders.map(it => it.update({ localStatus: 'exists' })));
+  }
+
+  // TODO: TEST
+  async setLocalShaForFile({ id }, shaSum) {
+    const fileFromDb = await this.entities.File.findOne({ where: { id } });
+    if (!fileFromDb) throw Error(`File with ${id} does not exist in DB`);
+    await fileFromDb.update({ localStatus: shaSum });
   }
 
   async getLocalUnknownFolders({ id: userId }, limit) {

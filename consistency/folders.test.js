@@ -39,7 +39,6 @@ describe('Folders', function desc() {
     const found = [];
     const toCheckAbs = untildify(toCheck);
     const traverseFolders = async root => {
-      if (found.length >= 10) return;
       const originalPath = path.join(toCheckAbs, root);
       const items = await fs.readdir(originalPath);
       const itemsWithLstat = await Promise.all(items
@@ -53,7 +52,7 @@ describe('Folders', function desc() {
     await traverseFolders('');
 
     expect(found).to.have.length.at.least(10);
-    await Promise.all(found.map(async file => {
+    await Promise.all(found.slice(0, 10).map(async file => {
       const [existingSha, toCheckSha] = await Promise.all(
         [existing, toCheck]
           .map(it => path.join(it, file))
@@ -61,5 +60,7 @@ describe('Folders', function desc() {
       );
       expect(existingSha).to.equal(toCheckSha);
     }));
+    /* eslint-disable-next-line no-console */
+    console.log(`Found ${found.length} files`);
   });
 });
