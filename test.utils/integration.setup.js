@@ -1,7 +1,7 @@
 'use strict';
 import shortId from 'shortid';
 import request from 'supertest';
-import fs from 'memfs';
+import { fs } from 'memfs';
 import apiSetup from '../server/setup/api';
 import Logger from '../server/utils/logger';
 
@@ -9,8 +9,8 @@ export default {
   init: async inject => {
     const testConfig = {
       db: ':memory:',
-      syncDirectory: '/random',
-      cacheDirectory: '/cache'
+      syncDirectory: `/${shortId()}`,
+      cacheDirectory: `/${shortId()}`
     };
     const defaultInjected = {
       logger: new Logger(() => {}),
