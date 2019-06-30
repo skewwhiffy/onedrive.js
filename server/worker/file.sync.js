@@ -3,8 +3,6 @@ import path from 'path';
 import autobind from 'auto-bind';
 import shortId from 'shortid';
 import oneDriveApi from 'onedrive-api';
-import fs from 'fs'; // TODO: Import through container so that we can mock.
-// TODO: Currently, we inject fs.promises as fs
 
 const maxPauseMillis = 60000;
 // TODO: Move to config. Although this *does* seem optimal
@@ -14,7 +12,6 @@ export default class {
   constructor(
     logger,
     config,
-    /* eslint-disable-next-line no-shadow */
     fs,
     shaGenerator,
     onedriveService,
@@ -68,9 +65,9 @@ export default class {
 
   async download(user, file) {
     try {
-      await this.fs.access(this.config.cacheDirectory);
+      await this.fs.promises.access(this.config.cacheDirectory);
     } catch (err) {
-      await this.fs.mkdir(this.config.cacheDirectory, { recursive: true });
+      await this.fs.promises.mkdir(this.config.cacheDirectory, { recursive: true });
     }
 
     const cacheFileRelativePath = shortId();
@@ -79,7 +76,7 @@ export default class {
     const targetFile = path.join(this.config.syncDirectory, relativePath);
     if (Object.values(this.downloading).indexOf(targetFile) >= 0) return;
     this.downloading[cacheFileRelativePath] = targetFile;
-    const targetStream = await fs.createWriteStream(cacheFilePath);
+    const targetStream = await this.fs.createWriteStream(cacheFilePath);
     const { accessToken } = await this.onedriveService.getAccessToken(user.refreshToken);
     const downloadStream = oneDriveApi.items.download({
       accessToken, itemId: file.id
@@ -100,15 +97,15 @@ export default class {
         throw Error(`Integrity check for ${relativePath} failed`);
       }
       this.logger.info(`Moving ${relativePath} to sync directory`);
-      await this.fs.copyFile(cacheFilePath, targetFile);
-      await this.fs.unlink(cacheFilePath);
+      await this.fs.promises.copyFile(cacheFilePath, targetFile);
+      await this.fs.promises.unlink(cacheFilePath);
       this.logger.info(`Download of ${relativePath} worked`);
       await this.fileRepo.setLocalShaForFile(file, shaSum);
     } catch (err) {
       this.logger.info(`Problem downloading file ${relativePath}. I might try again soon. Backing off.`);
       this.logger.error(err);
       this.backoff();
-      await this.fs.unlink(cacheFilePath);
+      await this.fs.promises.unlink(cacheFilePath);
     }
     delete this.downloading[cacheFileRelativePath];
   }

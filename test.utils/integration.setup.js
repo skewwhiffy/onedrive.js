@@ -1,7 +1,7 @@
 'use strict';
 import shortId from 'shortid';
 import request from 'supertest';
-import { promises as fs } from 'memfs';
+import fs from 'memfs';
 import apiSetup from '../server/setup/api';
 import Logger from '../server/utils/logger';
 

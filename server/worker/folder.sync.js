@@ -8,7 +8,7 @@ export default class {
   constructor(logger, config, fs, userRepo, syncStatusRepo, fileRepo) {
     this.logger = logger;
     this.config = config;
-    this.fs = fs;
+    this.fs = fs.promises;
     this.userRepo = userRepo;
     this.syncStatusRepo = syncStatusRepo;
     this.fileRepo = fileRepo;

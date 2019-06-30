@@ -22,7 +22,7 @@ describe('Folder sync worker', () => {
     rootFolder = await Server.insertRootFolder(user, ioc);
     syncStatusRepo = await ioc.getSyncStatusRepo();
     fileRepo = await ioc.getFileRepo();
-    fs = await ioc.getFs();
+    fs = (await ioc.getFs()).promises;
     worker = await ioc.instantiate(FolderSync);
   });
 

@@ -4,7 +4,7 @@ import crypto from 'crypto';
 
 export default class {
   constructor(fs) {
-    this.fs = fs;
+    this.fs = fs.promises;
   }
 
   async hash(file) {
