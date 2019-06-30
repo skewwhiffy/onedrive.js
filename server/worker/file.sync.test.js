@@ -1,15 +1,16 @@
 'use strict';
+import path from 'path';
 import Server from '../../test.utils/integration.setup';
 import FileSync from './file.sync';
 
-describe.only('File sync worker', () => {
+describe('File sync worker', () => {
   let ioc;
   let user;
   let config;
   let rootFolder;
-  let syncStatusRepo;
   let fileRepo;
   let fs;
+  let shaGenerator;
   let worker;
 
   beforeEach(async () => {
@@ -17,27 +18,27 @@ describe.only('File sync worker', () => {
     user = await Server.insertUser(ioc);
     config = await ioc.getConfig();
     rootFolder = await Server.insertRootFolder(user, ioc);
-    syncStatusRepo = await ioc.getSyncStatusRepo();
     fileRepo = await ioc.getFileRepo();
     fs = (await ioc.getFs()).promises;
+    shaGenerator = await ioc.getShaGenerator();
     worker = await ioc.instantiate(FileSync);
   });
 
-  it('Skips if there is are unknown folders', async () => {
-    await fileRepo.upsertFolder({
+  it('Skips if current file has same sha as onedrive version', async () => {
+    const fileName = 'file.txt';
+    const target = path.join(config.syncDirectory, fileName);
+    await fs.mkdir(config.syncDirectory, { recursive: true });
+    await fs.writeFile(target, 'hello world');
+    const file = {
       userId: user.id,
-      name: 'folder',
-      id: 'folderId',
+      name: fileName,
+      id: 'fileId',
       parentFolderId: rootFolder.id,
-      onedriveStatus: 'unknown',
+      onedriveStatus: await shaGenerator.hash(target),
       localStatus: 'unknown'
-    });
-    fileRepo.getLocalUnknownFiles = async () => { throw Error('NO'); };
+    };
+    await fileRepo.upsertFile(file);
 
     await worker.run();
-  });
-
-  it('Skips if current file has same sha as onedrive version', async () => {
-
   });
 });

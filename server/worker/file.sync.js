@@ -2,6 +2,7 @@
 import path from 'path';
 import autobind from 'auto-bind';
 import shortId from 'shortid';
+// TODO: Inject so that we can mock
 import oneDriveApi from 'onedrive-api';
 
 const maxPauseMillis = 60000;
@@ -74,6 +75,11 @@ export default class {
     const cacheFilePath = path.join(this.config.cacheDirectory, cacheFileRelativePath);
     const relativePath = await this.fileRepo.getPath(file);
     const targetFile = path.join(this.config.syncDirectory, relativePath);
+    const targetFileSha = await this.shaGenerator.hash(targetFile);
+    if (targetFileSha === file.onedriveStatus) {
+      this.logger.info(`File ${relativePath} is already downloaded`);
+      return;
+    }
     if (Object.values(this.downloading).indexOf(targetFile) >= 0) return;
     this.downloading[cacheFileRelativePath] = targetFile;
     const targetStream = await this.fs.createWriteStream(cacheFilePath);

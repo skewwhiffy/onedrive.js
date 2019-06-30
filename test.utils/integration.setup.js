@@ -9,7 +9,8 @@ export default {
   init: async inject => {
     const testConfig = {
       db: ':memory:',
-      syncDirectory: 'random'
+      syncDirectory: '/random',
+      cacheDirectory: '/cache'
     };
     const defaultInjected = {
       logger: new Logger(() => {}),
