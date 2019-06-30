@@ -78,6 +78,7 @@ export default class {
     const targetFileSha = await this.shaGenerator.hash(targetFile);
     if (targetFileSha === file.onedriveStatus) {
       this.logger.info(`File ${relativePath} is already downloaded`);
+      await this.fileRepo.setLocalShaForFile(file, file.onedriveStatus);
       return;
     }
     if (Object.values(this.downloading).indexOf(targetFile) >= 0) return;

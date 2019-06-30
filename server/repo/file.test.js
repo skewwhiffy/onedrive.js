@@ -127,4 +127,21 @@ describe('File repository', () => {
     expect(result).to.eql(localUnknown);
     expect(limited).to.have.length(2);
   });
+
+  it('sets sha for local file correctly', async () => {
+    const file = {
+      userId: user.id,
+      name: 'file',
+      id: 'fileId',
+      parentFolderId: rootFolder.id,
+      onedriveStatus: 'sha',
+      localStatus: 'notSha'
+    };
+    await fileRepo.upsertFile(file);
+
+    await fileRepo.setLocalShaForFile(file, 'sha');
+
+    const files = await fileRepo.getFiles(user);
+    expect(files[0].localStatus).to.equal('sha');
+  });
 });

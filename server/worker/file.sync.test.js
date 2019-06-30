@@ -40,5 +40,13 @@ describe('File sync worker', () => {
     await fileRepo.upsertFile(file);
 
     await worker.run();
+
+    const check = async () => {
+      const files = await fileRepo.getFiles(user);
+      if (files[0].localStatus === file.onedriveStatus) return;
+      await new Promise(resolve => setTimeout(resolve, 100));
+      await check();
+    };
+    await check();
   });
 });

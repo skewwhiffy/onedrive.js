@@ -131,7 +131,7 @@ export default class {
         userId,
         parentFolderId,
         onedriveStatus: file.onedriveStatus,
-        localStatus: 'unknown'
+        localStatus: file.localStatus
       }));
   }
 
@@ -153,9 +153,9 @@ export default class {
 
   // TODO: TEST
   async setLocalShaForFile({ id }, shaSum) {
-    const fileFromDb = await this.entities.File.findOne({ where: { id } });
-    if (!fileFromDb) throw Error(`File with ${id} does not exist in DB`);
-    await fileFromDb.update({ localStatus: shaSum });
+    const fileFromDb = await this.entities.File.findAll({ where: { id } });
+    if (fileFromDb.length === 0) throw Error(`File with ${id} does not exist in DB`);
+    await fileFromDb[0].update({ localStatus: shaSum });
   }
 
   async getLocalUnknownFolders({ id: userId }, limit) {
