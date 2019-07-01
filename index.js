@@ -15,8 +15,16 @@ const server = async () => {
   const { app, ioc } = await apiSetup(config);
 
   const logger = await ioc.getLogger();
-  app.listen(port, () => logger.info(`Listening on port ${port}`));
   await workerSetup(ioc);
+  app.listen(port, () => logger.info(`Listening on port ${port}`))
+    .on('error', err => {
+      logger.error('app threw an error');
+      logger.info(err.toString());
+    });
+  process.on('uncaughtException', err => {
+    logger.error('process threw an error');
+    logger.info(err);
+  });
 };
 
 server();
