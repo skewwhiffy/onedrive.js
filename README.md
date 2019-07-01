@@ -34,3 +34,4 @@ Pretty simple really.
 * Package up nicely.
 * Protect users with credentials/tokens so that we can open up the service to the world.
 * Expose media player.
+* Proper logging, with configurable logging levels, rolling logging files.
