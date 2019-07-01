@@ -2,6 +2,7 @@
 import axios from 'axios';
 import Sequelize from 'sequelize';
 import fs from 'fs';
+import onedriveApi from 'onedrive-api';
 import Logger from '../utils/logger';
 import dynamicRequire from '../utils/dynamic.require';
 
@@ -15,6 +16,7 @@ const singletons = {
       logging: false
     });
   },
+  getOnedriveApi: async () => onedriveApi,
   getFs: async () => fs,
   getLogger: async () => new Logger(),
 };

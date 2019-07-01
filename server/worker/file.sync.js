@@ -2,8 +2,6 @@
 import path from 'path';
 import autobind from 'auto-bind';
 import shortId from 'shortid';
-// TODO: Inject so that we can mock
-import oneDriveApi from 'onedrive-api';
 
 const maxPauseMillis = 60000;
 // TODO: Move to config. Although this *does* seem optimal
@@ -16,6 +14,7 @@ export default class {
     fs,
     shaGenerator,
     onedriveService,
+    onedriveApi,
     userRepo,
     syncStatusRepo,
     fileRepo
@@ -25,6 +24,7 @@ export default class {
     this.fs = fs;
     this.shaGenerator = shaGenerator;
     this.onedriveService = onedriveService;
+    this.onedriveApi = onedriveApi;
     this.userRepo = userRepo;
     this.syncStatusRepo = syncStatusRepo;
     this.fileRepo = fileRepo;
@@ -85,7 +85,7 @@ export default class {
     this.downloading[cacheFileRelativePath] = targetFile;
     const targetStream = await this.fs.createWriteStream(cacheFilePath);
     const { accessToken } = await this.onedriveService.getAccessToken(user.refreshToken);
-    const downloadStream = oneDriveApi.items.download({
+    const downloadStream = this.onedriveApi.items.download({
       accessToken, itemId: file.id
     });
     this.logger.info(`Trying to download ${relativePath}`);

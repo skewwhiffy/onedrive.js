@@ -1,4 +1,5 @@
 'use strict';
+import shortId from 'shortid';
 import { expect } from 'chai';
 import Server from '../../test.utils/integration.setup';
 
@@ -21,5 +22,13 @@ describe('Sha generator', () => {
     const result = await generator.hash(file);
 
     expect(result).to.equal(expectedSha);
+  });
+
+  it('generates no sha if file does not exist', async () => {
+    const file = `/${shortId()}`;
+
+    const result = await generator.hash(file);
+
+    expect(result).to.be.false();
   });
 });

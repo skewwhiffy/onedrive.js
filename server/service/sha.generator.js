@@ -10,9 +10,14 @@ export default class {
   async hash(file) {
     const filePath = untildify(file);
     const shasum = crypto.createHash('sha1');
-    const stream = await this.fs.readFile(filePath);
-    shasum.update(stream);
-    const hash = await shasum.digest('hex');
-    return hash.toUpperCase();
+    try {
+      const stream = await this.fs.readFile(filePath);
+      shasum.update(stream);
+      const hash = await shasum.digest('hex');
+      return hash.toUpperCase();
+    } catch (err) {
+      if (err.code === 'ENOENT') return false;
+      throw err;
+    }
   }
 }

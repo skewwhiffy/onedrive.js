@@ -2,11 +2,13 @@
 import shortId from 'shortid';
 import request from 'supertest';
 import { fs } from 'memfs';
+import FakeOnedriveApi from './fake.onedrive.api';
 import apiSetup from '../server/setup/api';
 import Logger from '../server/utils/logger';
 
 export default {
   init: async inject => {
+    const onedriveApi = new FakeOnedriveApi();
     const testConfig = {
       db: ':memory:',
       syncDirectory: `/${shortId()}`,
@@ -14,6 +16,7 @@ export default {
     };
     const defaultInjected = {
       logger: new Logger(() => {}),
+      onedriveApi,
       fs
     };
     if (inject) Object.assign(defaultInjected, inject);
