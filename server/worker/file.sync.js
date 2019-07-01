@@ -96,6 +96,7 @@ export default class {
         pipe.on('finish', resolve);
         pipe.on('error', reject);
       });
+      pipe.close();
       this.logger.info(`Checking integrity of ${relativePath}`);
       const shaSum = await this.shaGenerator.hash(cacheFilePath);
       if (shaSum !== file.onedriveStatus) {
