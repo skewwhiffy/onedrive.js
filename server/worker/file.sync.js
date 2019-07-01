@@ -71,26 +71,27 @@ export default class {
       await this.fs.promises.mkdir(this.config.cacheDirectory, { recursive: true });
     }
 
+    let relativePath = false;
     const cacheFileRelativePath = shortId();
     const cacheFilePath = path.join(this.config.cacheDirectory, cacheFileRelativePath);
-    const relativePath = await this.fileRepo.getPath(file);
-    const targetFile = path.join(this.config.syncDirectory, relativePath);
-    const targetFileSha = await this.shaGenerator.hash(targetFile);
-    if (targetFileSha === file.onedriveStatus) {
-      this.logger.info(`File ${relativePath} is already downloaded`);
-      await this.fileRepo.setLocalShaForFile(file, file.onedriveStatus);
-      return;
-    }
-    if (Object.values(this.downloading).indexOf(targetFile) >= 0) return;
-    this.downloading[cacheFileRelativePath] = targetFile;
-    const targetStream = await this.fs.createWriteStream(cacheFilePath);
-    const { accessToken } = await this.onedriveService.getAccessToken(user.refreshToken);
-    const downloadStream = this.onedriveApi.items.download({
-      accessToken, itemId: file.id
-    });
-    this.logger.info(`Trying to download ${relativePath}`);
-    const pipe = downloadStream.pipe(targetStream);
     try {
+      relativePath = await this.fileRepo.getPath(file);
+      const targetFile = path.join(this.config.syncDirectory, relativePath);
+      const targetFileSha = await this.shaGenerator.hash(targetFile);
+      if (targetFileSha === file.onedriveStatus) {
+        this.logger.info(`File ${relativePath} is already downloaded`);
+        await this.fileRepo.setLocalShaForFile(file, file.onedriveStatus);
+        return;
+      }
+      if (Object.values(this.downloading).indexOf(targetFile) >= 0) return;
+      this.downloading[cacheFileRelativePath] = targetFile;
+      const targetStream = await this.fs.createWriteStream(cacheFilePath);
+      const { accessToken } = await this.onedriveService.getAccessToken(user.refreshToken);
+      const downloadStream = this.onedriveApi.items.download({
+        accessToken, itemId: file.id
+      });
+      this.logger.info(`Trying to download ${relativePath}`);
+      const pipe = downloadStream.pipe(targetStream);
       await new Promise((resolve, reject) => {
         pipe.on('finish', resolve);
         pipe.on('error', reject);
@@ -109,7 +110,7 @@ export default class {
       this.logger.info(`Download of ${relativePath} worked`);
       await this.fileRepo.setLocalShaForFile(file, shaSum);
     } catch (err) {
-      this.logger.info(`Problem downloading file ${relativePath}. I might try again soon. Backing off.`);
+      this.logger.info(`Problem downloading file ${relativePath || file.id}. I might try again soon. Backing off.`);
       this.logger.error(err);
       this.backoff();
       await this.fs.promises.unlink(cacheFilePath);
