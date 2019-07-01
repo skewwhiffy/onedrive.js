@@ -79,7 +79,6 @@ export default class {
     if (targetFileSha === file.onedriveStatus) {
       this.logger.info(`File ${relativePath} is already downloaded`);
       await this.fileRepo.setLocalShaForFile(file, file.onedriveStatus);
-      delete this.downloading[cacheFileRelativePath];
       return;
     }
     if (Object.values(this.downloading).indexOf(targetFile) >= 0) return;
