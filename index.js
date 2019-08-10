@@ -15,7 +15,7 @@ const server = async () => {
   const { app, ioc } = await apiSetup(config);
 
   const logger = await ioc.getLogger();
-  await workerSetup(ioc);
+  workerSetup(ioc);
   app.listen(port, () => logger.info(`Listening on port ${port}`))
     .on('error', err => {
       logger.error('app threw an error');
