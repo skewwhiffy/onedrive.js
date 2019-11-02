@@ -54,7 +54,7 @@
     "luxon": "^1.16.0",
     "onedrive-api": "^0.3.1",
     "querystring": "^0.2.0",
-    "sequelize": "^5.8.12",
+    "sequelize": "^5.15.1",
     "shortid": "^2.2.14",
     "sqlite3": "^4.0.9",
     "umzug": "^2.2.0",
