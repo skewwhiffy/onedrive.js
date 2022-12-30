@@ -38,7 +38,7 @@
     "eslint-plugin-mocha": "^5.3.0",
     "eslint-plugin-vue": "^5.2.2",
     "memfs": "^2.15.4",
-    "mocha": "^6.1.4",
+    "mocha": "^10.2.0",
     "proxyquire": "^2.1.0",
     "sinon": "^7.3.2",
     "supertest": "^4.0.2"
